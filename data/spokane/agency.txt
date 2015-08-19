@@ -1,0 +1,2 @@
+agency_phone,agency_fare_url,agency_url,agency_id,agency_name,agency_timezone,agency_lang
+509-328-7433,,http://www.spokanetransit.com,STA,Spokane Transit Authority,America/Vancouver,en

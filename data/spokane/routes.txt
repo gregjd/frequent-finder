@@ -1,0 +1,69 @@
+route_long_name,route_type,route_text_color,route_color,agency_id,route_id,route_url,route_desc,route_short_name
+Monroe,3,000000,FFFFFF,STA,5115,http://www.spokanetransit.com/routes-schedules/route/24-monroe/,,24
+Maple Ash,3,000000,FFFFFF,STA,5114,http://www.spokanetransit.com/routes-schedules/route/23-maple-ash/,,23
+Lidgerwood,3,000000,FFFFFF,STA,5117,http://www.spokanetransit.com/routes-schedules/route/26-lidgerwood/,,26
+Division,3,000000,FFFFFF,STA,5116,http://www.spokanetransit.com/routes-schedules/route/25-division/,,25
+SFCC,3,000000,FFFFFF,STA,5111,http://www.spokanetransit.com/routes-schedules/route/20-spokane-falls-community-college/,,20
+Southside Medical Shuttle,3,000000,FFFFFF,STA,5110,http://www.spokanetransit.com/routes-schedules/route/02-southside-medical-shuttle/,,2
+NW Blvd,3,000000,FFFFFF,STA,5113,http://www.spokanetransit.com/routes-schedules/route/22-nw-blvd/,,22
+West Broadway,3,000000,FFFFFF,STA,5112,http://www.spokanetransit.com/routes-schedules/route/21-west-broadway/,,21
+Lincoln 37th,3,000000,FFFFFF,STA,5126,http://www.spokanetransit.com/routes-schedules/route/43-lincoln-37th/,,43
+South Valley,3,000000,FFFFFF,STA,5138,http://www.spokanetransit.com/routes-schedules/route/97-south-valley/,,97
+Nevada,3,000000,FFFFFF,STA,5119,http://www.spokanetransit.com/routes-schedules/route/28-nevada/,,28
+Hillyard,3,000000,FFFFFF,STA,5118,http://www.spokanetransit.com/routes-schedules/route/27-hillyard/,,27
+East Central Millwood,3,000000,FFFFFF,STA,5072,http://www.spokanetransit.com/routes-schedules/route/94-east-central-millwood/,,94
+Hwy 2 via Brownes Add,3,000000,FFFFFF,STA,5131,http://www.spokanetransit.com/routes-schedules/route/61-highway-2-brownes-addition/,,61
+Wellesley,3,000000,FFFFFF,STA,5058,http://www.spokanetransit.com/routes-schedules/route/33-wellesley/,,33
+Freya,3,000000,FFFFFF,STA,5059,http://www.spokanetransit.com/routes-schedules/route/34-freya/,,34
+Liberty Lake via Sprague,3,000000,FFFFFF,STA,5139,http://www.spokanetransit.com/routes-schedules/route/98-liberty-lake-via-sprague/,,98
+Pines Sullivan,3,000000,FFFFFF,STA,5073,http://www.spokanetransit.com/routes-schedules/route/96-pines-sullivan/,,96
+Hillyard,3,000000,FFFFFF,STA,5054,http://www.spokanetransit.com/routes-schedules/route/27-hillyard/,,27
+Nevada,3,000000,FFFFFF,STA,5055,http://www.spokanetransit.com/routes-schedules/route/28-nevada/,,28
+SCC,3,000000,FFFFFF,STA,5056,http://www.spokanetransit.com/routes-schedules/route/29-spokane-community-college/,,29
+Sprague,3,000000,FFFFFF,STA,5071,http://www.spokanetransit.com/routes-schedules/route/90-sprague/,,90
+Maple Ash,3,000000,FFFFFF,STA,5050,http://www.spokanetransit.com/routes-schedules/route/23-maple-ash/,,23
+Monroe,3,000000,FFFFFF,STA,5051,http://www.spokanetransit.com/routes-schedules/route/24-monroe/,,24
+South Valley,3,000000,FFFFFF,STA,5074,http://www.spokanetransit.com/routes-schedules/route/97-south-valley/,,97
+Liberty Lake via Sprague,3,000000,FFFFFF,STA,5075,http://www.spokanetransit.com/routes-schedules/route/98-liberty-lake-via-sprague/,,98
+SCC,3,000000,FFFFFF,STA,5120,http://www.spokanetransit.com/routes-schedules/route/29-spokane-community-college/,,29
+Trent Montgomery,3,000000,FFFFFF,STA,5057,http://www.spokanetransit.com/routes-schedules/route/32-trent-montgomery/,,32
+Sprague,3,000000,FFFFFF,STA,5135,http://www.spokanetransit.com/routes-schedules/route/90-sprague/,,90
+29th Avenue,3,000000,FFFFFF,STA,5127,http://www.spokanetransit.com/routes-schedules/route/44-29th-ave/,,44
+Cheney EWU,3,000000,FFFFFF,STA,5133,http://www.spokanetransit.com/routes-schedules/route/66-cheney-ewu/,,66
+Medical Lake,3,000000,FFFFFF,STA,5132,http://www.spokanetransit.com/routes-schedules/route/62-medical-lake/,,62
+Airport via Brownes Add,3,000000,FFFFFF,STA,5130,http://www.spokanetransit.com/routes-schedules/route/60-airport-brownes-addition/,,60
+Division,3,000000,FFFFFF,STA,5052,http://www.spokanetransit.com/routes-schedules/route/25-division/,,25
+Trent Montgomery,3,000000,FFFFFF,STA,5121,http://www.spokanetransit.com/routes-schedules/route/32-trent-montgomery/,,32
+Plaza Arena Shuttle,3,000000,FFFFFF,STA,5105,http://www.spokanetransit.com/routes-schedules/route/01-plaza-arena-shuttle/,,1
+Cheney Local,3,000000,FFFFFF,STA,5134,http://www.spokanetransit.com/routes-schedules/route/68-cheney-local/,,68
+Lidgerwood,3,000000,FFFFFF,STA,5053,http://www.spokanetransit.com/routes-schedules/route/26-lidgerwood/,,26
+Regal,3,000000,FFFFFF,STA,5064,http://www.spokanetransit.com/routes-schedules/route/45-regal/,,45
+Highway 2 via Brownes Addition,3,000000,FFFFFF,STA,5067,http://www.spokanetransit.com/routes-schedules/route/61-highway-2-brownes-addition/,,61
+Airport via Brownes Addition,3,000000,FFFFFF,STA,5066,http://www.spokanetransit.com/routes-schedules/route/60-airport-brownes-addition/,,60
+South Adams,3,000000,FFFFFF,STA,5061,http://www.spokanetransit.com/routes-schedules/route/42-south-adams/,,42
+Mission,3,000000,FFFFFF,STA,5060,http://www.spokanetransit.com/routes-schedules/route/39-mission/,,39
+29th Avenue,3,000000,FFFFFF,STA,5063,http://www.spokanetransit.com/routes-schedules/route/44-29th-ave/,,44
+Lincoln 37th,3,000000,FFFFFF,STA,5062,http://www.spokanetransit.com/routes-schedules/route/43-lincoln-37th/,,43
+Mission,3,000000,FFFFFF,STA,5124,http://www.spokanetransit.com/routes-schedules/route/39-mission/,,39
+Cheney EWU,3,000000,FFFFFF,STA,5069,http://www.spokanetransit.com/routes-schedules/route/66-cheney-ewu/,,66
+Medical Lake,3,000000,FFFFFF,STA,5068,http://www.spokanetransit.com/routes-schedules/route/62-medical-lake/,,62
+VTC Express,3,000000,FFFFFF,STA,5108,http://www.spokanetransit.com/routes-schedules/route/173-valley-transit-center-express/,,173
+Liberty Lake Express,3,000000,FFFFFF,STA,5109,http://www.spokanetransit.com/routes-schedules/route/174-liberty-lake-express/,,174
+Regal,3,000000,FFFFFF,STA,5128,http://www.spokanetransit.com/routes-schedules/route/45-regal/,,45
+Freya,3,000000,FFFFFF,STA,5123,http://www.spokanetransit.com/routes-schedules/route/34-freya/,,34
+NW Blvd,3,000000,FFFFFF,STA,5049,http://www.spokanetransit.com/routes-schedules/route/22-nw-blvd/,,22
+West Broadway,3,000000,FFFFFF,STA,5048,http://www.spokanetransit.com/routes-schedules/route/21-west-broadway/,,21
+SFCC,3,000000,FFFFFF,STA,5047,http://www.spokanetransit.com/routes-schedules/route/20-spokane-falls-community-college/,,20
+Southside Medical Shuttle,3,000000,FFFFFF,STA,5046,http://www.spokanetransit.com/routes-schedules/route/02-southside-medical-shuttle/,,2
+Liberty Lake Express,3,000000,FFFFFF,STA,5045,http://www.spokanetransit.com/routes-schedules/route/174-liberty-lake-express/,,174
+VTC Express,3,000000,FFFFFF,STA,5044,http://www.spokanetransit.com/routes-schedules/route/173-valley-transit-center-express/,,173
+Cheney Express,3,000000,FFFFFF,STA,5043,http://www.spokanetransit.com/routes-schedules/route/165-cheney-express/,,165
+North Express,3,000000,FFFFFF,STA,5042,http://www.spokanetransit.com/routes-schedules/route/124-north-express/,,124
+Plaza Arena Shuttle,3,000000,FFFFFF,STA,5041,http://www.spokanetransit.com/routes-schedules/route/01-plaza-arena-shuttle/,,1
+Cheney Express,3,000000,FFFFFF,STA,5107,http://www.spokanetransit.com/routes-schedules/route/165-cheney-express/,,165
+Cheney Local,3,000000,FFFFFF,STA,5070,http://www.spokanetransit.com/routes-schedules/route/68-cheney-local/,,68
+Wellesley,3,000000,FFFFFF,STA,5122,http://www.spokanetransit.com/routes-schedules/route/33-wellesley/,,33
+North Express,3,000000,FFFFFF,STA,5106,http://www.spokanetransit.com/routes-schedules/route/124-north-express/,,124
+South Adams,3,000000,FFFFFF,STA,5125,http://www.spokanetransit.com/routes-schedules/route/42-south-adams/,,42
+Pines Sullivan,3,000000,FFFFFF,STA,5137,http://www.spokanetransit.com/routes-schedules/route/96-pines-sullivan/,,96
+East Central Millwood,3,000000,FFFFFF,STA,5136,http://www.spokanetransit.com/routes-schedules/route/94-east-central-millwood/,,94
