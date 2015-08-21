@@ -3,17 +3,6 @@ import itertools
 # import json
 
 
-def groupBy_Old(iterable, keyfunc):
-    """Like itertools.groupby but the results go directly to a dict."""
-
-    groups = itertools.groupby(iterable, keyfunc)
-    groups_dict = {}
-    for k, g in groups:
-        groups_dict[k] = list(g)
-
-    return groups_dict
-
-
 def groupBy(iterable, keyfunc):
     """Groups items in iterable based on keyfun
 
