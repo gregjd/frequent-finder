@@ -84,10 +84,16 @@ class System:
         f = open(filename, "r")
         r = csv.DictReader(f)
 
+        print ("File opened: " + file_loc)
+
         self.trips = groupBy(r, getTripID)
+        print ("Trips aggregated.")
+
         self.services = groupBy(trips, getStopSeq)
+        print ("Services aggregated.")
 
         f.close()
+        print ("File closed.")
 
 
 class ServiceGroup:
@@ -196,13 +202,15 @@ class Segment:
 
 if __name__ == "__main__":
 
-    print "Executing :)"
+    # print "Executing :)"
 
-    filename = "data/spokane/stop_times.txt"
-    f = open(filename, "r")
-    r = csv.DictReader(f)
+    # filename = "data/spokane/stop_times.txt"
+    # f = open(filename, "r")
+    # r = csv.DictReader(f)
 
-    trips = groupBy(r, getTripID)
-    services = groupBy(trips, getStopSeq)
+    # trips = groupBy(r, getTripID)
+    # services = groupBy(trips, getStopSeq)
 
-    f.close()
+    # f.close()
+
+    system = System("data/spokane/stop_times.txt")
