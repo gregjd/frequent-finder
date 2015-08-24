@@ -38,33 +38,31 @@ def groupBy(iterable, keyfunc):
     return groups_dict
 
 
-def getTripID(stoptime):
+def getTripID(stop_time):
     """Returns the trip_id from a stop time."""
 
-    return stoptime["trip_id"]
+    return stop_time["trip_id"]
 
 
 def getStopSeq(trip):
     """Returns the stop sequence for a given trip.
-
-    Stop sequence is given as a string of the stop_ids joined by '@' symbols.
 
     Args:
         trip: List of dicts, where the list represents one trip
             and each dict holds the data for a stop on that trip
 
     Returns:
-        A string representing
+        A string of the stop_ids joined by '@' symbols.
     """
 
     # Shouldn't need this:
     if type(trip) != list:
         raise Exception("Argument must be a list.")
 
-    def getStopID(stoptime):
+    def getStopID(stop_time):
 
-        if "@" not in stoptime["stop_id"]:
-            return stoptime["stop_id"]
+        if "@" not in stop_time["stop_id"]:
+            return stop_time["stop_id"]
         else:
             raise Exception("'stop_id' cannot contain the '@' symbol")
             # "@" is being used to join stop_ids together
@@ -73,9 +71,132 @@ def getStopSeq(trip):
     return "@".join(map(getStopID, trip))
 
 
+def getStopList(stop_seq):
+    """Takes a stop sequence string and returns a list of stop IDs."""
+
+    return stop_seq.split("@")
+
+
+class System:
+
+    def __init__(self, file_loc):
+
+        f = open(filename, "r")
+        r = csv.DictReader(f)
+
+        self.trips = groupBy(r, getTripID)
+        self.services = groupBy(trips, getStopSeq)
+
+        f.close()
+
+
+class ServiceGroup:
+
+    pass
+
+
+class Service:
+
+    def __init__(self, stop_seq):
+
+        self.stop_seq = stop_seq
+        self.stop_list = getStopList(stop_seq)
+        self.trips = []
+
+    def __repr__(self):
+
+        return self.stop_seq
+
+    def addTrip(self, trip):
+
+        if isinstance(trip, Trip):
+            self.trips.append(trip)
+        else:
+            raise Exception("Trip to add must be an instance of Trip")
+
+    def getStopList(self):
+
+        return self.stop_list
+
+
+class Trip:
+
+    def __init__(self, trip_id, service, stops_info):
+
+        self.trip_id = trip_id
+        self.service = service  # Service that it's a trip of
+        self.stops_info = stops_info
+
+        for s in stops_info:
+            stop = s["stop_id"]
+            time = s["arrival_time"]
+            # stops[stop].addTrip(self, time)
+
+    def __repr__(self):
+
+        return self.trip_id
+
+    def getService(self):
+
+        return self.service
+
+    def getStopList(self):
+
+        return self.getService().getStopList()
+
+    def getStopTimes(self):
+
+        pass
+
+
+class Stop:
+
+    def __init__(self, stop_id):
+
+        self.stop_id = stop_id
+        self.services = []
+        self.trip_times = {} # keys = time points, values = Trips
+
+    def __repr__(self):
+
+        return self.stop_id
+
+    def addTrip(self, trip, time):
+
+        if isinstance(trip, Trip):
+            if time not in self.trip_times:
+                self.trip_times[time] = []
+            self.trip_times[time].append(trip)
+            # Allows multiple arrivals at a stop for a given time
+        else:
+            raise Exception("Trip to add must be an instance of Trip")
+
+        return
+
+    def addService(self, new):
+
+        # Modify to include number of times each service stops here?
+        if isinstance(new, Service):
+            if new not in self.services:
+                self.services.append(new)
+        else:
+            raise Exception("Service to add must be an instance of Service")
+
+        return self
+
+    def getServices(self):
+
+        return self.services
+
+
+class Segment:
+
+    pass
+
+
 if __name__ == "__main__":
 
-    print "exec"
+    print "Executing :)"
 
     filename = "data/spokane/stop_times.txt"
     f = open(filename, "r")
