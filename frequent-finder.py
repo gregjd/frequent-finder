@@ -2,6 +2,49 @@ import csv
 # import json
 
 
+def sortCalendar(cal_file_loc, date):
+
+    cf = open(cal_file_loc, "r")
+    print ("File opened: " + cal_file_loc)
+    cr = csv.DictReader(cf)
+
+    def inDateRange(x):
+
+        return (int(x["start_date"]) < date < int(x["end_date"]))
+        # Note: 'date' is as given as a parameter to sortCalendar()
+
+    cl = filter(inDateRange, list(cr))
+
+    # This can almost certainly be written more elegantly:
+    days = {
+        "monday": [],
+        "tuesday": [],
+        "wednesday": [],
+        "thursday": [],
+        "friday": [],
+        "saturday": [],
+        "sunday": []
+    }
+    for serv in cl:
+        for i in serv:
+            if i[-3:] == "day": # if key is a day of the week
+                if serv[i] == "1":
+                    days[i].append(serv["service_id"])
+    day_patterns = []
+    for day in days:
+        if days[day] not in day_patterns:
+            day_patterns.append(days[day])
+            # Creates a list of unique "day service patterns"
+            # so that we only need to check each combination of services
+            # once, instead of (say) checking Monday, Tuesday,
+            # Wednesday, etc. individually.
+
+    cf.close()
+    print ("File closed: " + cal_file_loc)
+
+    return day_patterns
+
+
 def groupBy(iterable, keyfunc):
     """Groups items in iterable based on keyfun
 
@@ -82,9 +125,8 @@ class System:
     def __init__(self, file_loc):
 
         f = open(filename, "r")
-        r = csv.DictReader(f)
-
         print ("File opened: " + file_loc)
+        r = csv.DictReader(f)
 
         self.trips = groupBy(r, getTripID)
         print ("Trips aggregated.")
@@ -93,7 +135,7 @@ class System:
         print ("Services aggregated.")
 
         f.close()
-        print ("File closed.")
+        print ("File closed: " + file_loc)
 
 
 class ServiceGroup:
@@ -202,15 +244,5 @@ class Segment:
 
 if __name__ == "__main__":
 
-    # print "Executing :)"
-
-    # filename = "data/spokane/stop_times.txt"
-    # f = open(filename, "r")
-    # r = csv.DictReader(f)
-
-    # trips = groupBy(r, getTripID)
-    # services = groupBy(trips, getStopSeq)
-
-    # f.close()
-
     system = System("data/spokane/stop_times.txt")
+    c = sortCalendar("data/spokane/calendar.txt", 20150808)
