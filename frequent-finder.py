@@ -1,5 +1,16 @@
 import csv
-# import json
+import json
+
+
+def loadJSON(json_file_loc):
+
+    jf = open(json_file_loc, "r")
+    js = json.loads(jf.read())
+    jf.close()
+
+    js.encode("ascii")
+
+    return js
 
 
 def sortCalendar(cal_file_loc, date):
