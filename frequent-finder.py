@@ -2,18 +2,47 @@ import csv
 import json
 
 
+def check(cal, js):
+
+    # FIX; also can probably be more elegant
+    patterns = []
+    for pattern in js: # fix
+        name = pattern[u"name"]
+        rules_to_check = []
+        for rule in pattern[u"rules"]:
+            start = rule[u"start_time"].encode("ascii")
+            end = rule[u"end_time"].encode("ascii")
+            for day in rule[u"days"]:
+                d = day.encode("ascii")
+                if (cal[d], start, end) not in rules_to_check:
+                    rules_to_check.append(cal[d], start, end)
+    # Do something regarding 'patterns'
+    return patterns
+
+
 def loadJSON(json_file_loc):
 
     jf = open(json_file_loc, "r")
     js = json.loads(jf.read())
     jf.close()
 
-    js.encode("ascii")
+    # js.encode("ascii")
 
     return js
 
 
 def sortCalendar(cal_file_loc, date):
+    """Takes the calendar file (calendar.txt) and matches service patterns
+    with days of the week.
+
+    Args:
+        cal_file_loc: String location of the calendar file
+        date: String date (YYYYMMDD) to be used to find the applicable
+            service period
+
+    Returns:
+        A dictionary with days as keys and effective service IDs as values
+    """
 
     cf = open(cal_file_loc, "r")
     print ("File opened: " + cal_file_loc)
@@ -41,19 +70,22 @@ def sortCalendar(cal_file_loc, date):
             if i[-3:] == "day": # if key is a day of the week
                 if serv[i] == "1":
                     days[i].append(serv["service_id"])
-    day_patterns = []
-    for day in days:
-        if days[day] not in day_patterns:
-            day_patterns.append(days[day])
-            # Creates a list of unique "day service patterns"
-            # so that we only need to check each combination of services
-            # once, instead of (say) checking Monday, Tuesday,
-            # Wednesday, etc. individually.
+    # # Will leave out this part for now, to possibly be added later
+    # # when I decide how to optimize day-handling:
+    # day_patterns = []
+    # for day in days:
+    #     if days[day] not in day_patterns:
+    #         day_patterns.append(days[day])
+    #         # Creates a list of unique "day service patterns"
+    #         # so that we only need to check each combination of services
+    #         # once, instead of (say) checking Monday, Tuesday,
+    #         # Wednesday, etc. individually.
 
     cf.close()
     print ("File closed: " + cal_file_loc)
 
-    return day_patterns
+    # return day_patterns
+    return days
 
 
 def groupBy(iterable, keyfunc):
@@ -257,3 +289,4 @@ if __name__ == "__main__":
 
     system = System("data/spokane/stop_times.txt")
     c = sortCalendar("data/spokane/calendar.txt", 20150808)
+    js = loadJSON("config.json")
