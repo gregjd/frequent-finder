@@ -342,6 +342,14 @@ class Stop:
 
         return self.services
 
+    def getLon(self):
+
+        return self.stop_lon
+
+    def getLat(self):
+
+        return self.stop_lat
+
 
 class Segment:
 
@@ -364,6 +372,22 @@ class Segment:
         self.last_stop = last_stop
 
         return self
+
+    def getInitStop(self):
+
+        return self.init_stop
+
+    def getLastStop(self):
+
+        return self.last_stop
+
+    def getStops(self):
+
+        return self.stops
+
+    def getServices(self):
+
+        return self.services
 
 
 if __name__ == "__main__":
