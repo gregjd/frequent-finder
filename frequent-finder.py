@@ -145,16 +145,6 @@ def getStopSeq(trip):
     if type(trip) != list:
         raise Exception("Argument must be a list.")
 
-    # def getStopID(stop_time):
-
-    #     if "@" not in stop_time["stop_id"]:
-    #         return stop_time["stop_id"]
-    #     else:
-    #         raise Exception("'stop_id' cannot contain the '@' symbol")
-    #         # "@" is being used to join stop_ids together
-    #         # Could modify this function to substitute another character
-
-    # return "@".join(map(getStopID, trip))
     return tuple(map(lambda x: str(x["stop_id"]), trip))
 
 
@@ -193,18 +183,6 @@ class System:
         # keys = stop sequence tuples, values = dicts from self.trips
         # (where keys = trip_ids, values = lists of stop info dicts)
         print ("Services aggregated.")
-
-        # for serv in self.services:
-        #     for s in len(serv):
-        #         # try:
-        #         #     self.stops[serv[s]].addPathOut(serv, serv[s+1])
-        #         # except IndexError:
-        #         #     self.stops[serv[s]].addPathOut(serv, None)
-        #         if s == 0:
-        #             self.stops[serv[s]].addPathIn(None, serv)
-        #             # Denotes this stop as the first stop for a certain service
-        #         else:
-        #             self.stops[serv[s]].addPathIn(serv[s-1], serv)
 
         self.paths = {}  # Keys = path tuples (stop0, stop1), values = dicts
         for serv in self.services:
@@ -251,15 +229,6 @@ class System:
         if len(self.paths_ua) > 0:
             raise Exception("Not all paths have been assigned to a Segment.")
         print ("Segments compiled.")
-
-
-        # self.serv_groups = groupBy(self.paths, lambda x: tuple(x))
-        # for sg in self.serv_groups:
-        #     path_dict = dict(self.serv_groups[sg].keys()) # K = start, v = end
-
-        # self.paths = {}
-        # # dict where keys = tuples with starting and ending stop IDs,
-        # # values = lists of services that operate on that path
 
         f.close()
         print ("File closed: " + st_file_loc)
@@ -339,21 +308,12 @@ class Stop:
         self.stop_name = stop_dict["stop_name"]
         self.stop_desc = stop_dict["stop_desc"]
 
-        self.paths_in = {} # keys = stop_ids (or None), values = stop sequences
         self.services = []
         self.trip_times = {} # keys = time points, values = Trips
 
     def __repr__(self):
 
         return self.stop_id
-
-    def addPathIn(self, prev_stop_id, stop_seq):
-
-        if prev_stop_id not in self.paths_in:
-            self.paths_in[prev_stop_id] = []
-        self.paths_in[prev_stop_id].append(stop_seq)
-
-        return self
 
     def addTrip(self, trip, time):
 
