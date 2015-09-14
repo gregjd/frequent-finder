@@ -1,0 +1,111 @@
+route_long_name,route_type,agency_id,route_id,route_url,route_desc,route_short_name
+Elmwood/Airport,3,RIPTA,20-55,http://www.ripta.com/20,,20
+Elmwood/Airport,3,RIPTA,20-56,http://www.ripta.com/20,,20
+Pontiac Avenue,3,RIPTA,22-56,http://www.ripta.com/22,,22
+Pontiac Avenue,3,RIPTA,22-55,http://www.ripta.com/22,,22
+Newport/URI-Kingston,3,RIPTA,64-55,http://www.ripta.com/64,,64
+Newport/URI-Kingston,3,RIPTA,64-56,http://www.ripta.com/64,,64
+Broadway/Hartford,3,RIPTA,28-55,http://www.ripta.com/28,,28
+Broadway/Hartford,3,RIPTA,28-56,http://www.ripta.com/28,,28
+Westerly Express,3,RIPTA,95-55,http://www.ripta.com/95,,95X
+Westerly Express,3,RIPTA,95-56,http://www.ripta.com/95,,95X
+West Bay,3,RIPTA,14-56,http://www.ripta.com/14,,14
+Coventry/Arctic/Warwick Mall,3,RIPTA,13-56,http://www.ripta.com/13,,13
+Coventry/Arctic/Warwick Mall,3,RIPTA,13-55,http://www.ripta.com/13,,13
+West Bay,3,RIPTA,14-55,http://www.ripta.com/14,,14
+Kent County,3,RIPTA,29-56,http://www.ripta.com/29,,29
+Kent County,3,RIPTA,29-55,http://www.ripta.com/29,,29
+Riverside,3,RIPTA,33-55,http://www.ripta.com/33,,33
+Arlington/Oaklawn,3,RIPTA,30-55,http://www.ripta.com/30,,30
+Arlington/Oaklawn,3,RIPTA,30-56,http://www.ripta.com/30,,30
+Bellevue/Mansions/Salve Regina University,3,RIPTA,67-55,http://www.ripta.com/67,,67
+Fairlawn/CCRI-Lincoln/Twin River Casino,3,RIPTA,73-55,http://www.ripta.com/73,,73
+Fairlawn/CCRI-Lincoln/Twin River Casino,3,RIPTA,73-56,http://www.ripta.com/73,,73
+Bellevue/Mansions/Salve Regina University,3,RIPTA,67-56,http://www.ripta.com/67,,67
+Union Avenue,3,RIPTA,18-56,http://www.ripta.com/18,,18
+URI-Kingston/Galilee,3,RIPTA,66-56,http://www.ripta.com/66,,66
+URI-Kingston/Galilee,3,RIPTA,66-55,http://www.ripta.com/66,,66
+Union Avenue,3,RIPTA,18-55,http://www.ripta.com/18,,18
+Reservoir/Garden City/CCRI-Warwick,3,RIPTA,21-56,http://www.ripta.com/21,,21
+Reservoir/Garden City/CCRI-Warwick,3,RIPTA,21-55,http://www.ripta.com/21,,21
+Dexter Street/Lincoln Mall,3,RIPTA,75-56,http://www.ripta.com/75,,75
+Dexter Street/Lincoln Mall,3,RIPTA,75-55,http://www.ripta.com/75,,75
+North Scituate Express,3,RIPTA,10-56,http://www.ripta.com/10,,10X
+North Scituate Express,3,RIPTA,10-55,http://www.ripta.com/10,,10X
+Fairmount/Walnut Hill,3,RIPTA,87-56,http://www.ripta.com/87,,87
+Fairmount/Walnut Hill,3,RIPTA,87-55,http://www.ripta.com/87,,87
+Pawtucket Avenue/Broad Street (Pawtucket),3,RIPTA,71-56,http://www.ripta.com/71,,71
+Pawtucket Avenue/Broad Street (Pawtucket),3,RIPTA,71-55,http://www.ripta.com/71,,71
+Prairie Avenue,3,RIPTA,6-55,http://www.ripta.com/6,,6
+Prairie Avenue,3,RIPTA,6-56,http://www.ripta.com/6,,6
+North Smithfield/Lincoln Express,3,RIPTA,59-55,http://www.ripta.com/59,,59X
+North Smithfield/Lincoln Express,3,RIPTA,59-56,http://www.ripta.com/59,,59X
+Admiral Street/Providence College,3,RIPTA,55-55,http://www.ripta.com/55,,55
+Chalkstone Avenue,3,RIPTA,56-55,http://www.ripta.com/56,,56
+Chalkstone Avenue,3,RIPTA,56-56,http://www.ripta.com/56,,56
+Admiral Street/Providence College,3,RIPTA,55-56,http://www.ripta.com/55,,55
+Rumford/Newport Avenue,3,RIPTA,35-56,http://www.ripta.com/35,,35
+Rumford/Newport Avenue,3,RIPTA,35-55,http://www.ripta.com/35,,35
+East Providence/Wampanoag Trail,3,RIPTA,32-56,http://www.ripta.com/32,,32
+Beverage Hill (East Providence),3,RIPTA,78-55,http://www.ripta.com/78,,78
+Beverage Hill (East Providence),3,RIPTA,78-56,http://www.ripta.com/78,,78
+East Providence/Wampanoag Trail,3,RIPTA,32-55,http://www.ripta.com/32,,32
+Camp Street,3,RIPTA,49-55,http://www.ripta.com/49,,49
+Camp Street,3,RIPTA,49-56,http://www.ripta.com/49,,49
+Arctic/R.I. Route117 Express,3,RIPTA,12-55,http://www.ripta.com/12,,12X
+Cranston Street,3,RIPTA,31-55,http://www.ripta.com/31,,31
+Charles Street,3,RIPTA,51-55,http://www.ripta.com/51,,51
+Charles Street,3,RIPTA,51-56,http://www.ripta.com/51,,51
+stand-by,3,RIPTA,2-55,,,2
+Broadway (Newport-Middletown),3,RIPTA,63-56,http://www.ripta.com/63,,63
+Douglas Avenue,3,RIPTA,50-56,http://www.ripta.com/50,,50
+Douglas Avenue,3,RIPTA,50-55,http://www.ripta.com/50,,50
+East Providence,3,RIPTA,34-55,http://www.ripta.com/34,,34
+East Providence,3,RIPTA,34-56,http://www.ripta.com/34,,34
+Wakefield Express,3,RIPTA,65-56,http://www.ripta.com/65,,65X
+Wakefield Express,3,RIPTA,65-55,http://www.ripta.com/65,,65X
+Butler/Elmgrove,3,RIPTA,40-56,http://www.ripta.com/40,,40
+Butler/Elmgrove,3,RIPTA,40-55,http://www.ripta.com/40,,40
+Eddy/Hope/Benefit,3,RIPTA,1-55,http://www.ripta.com/1,,1
+Eddy/Hope/Benefit,3,RIPTA,1-56,http://www.ripta.com/1,,1
+Tiverton/East Bay Express,3,RIPTA,61-56,http://www.ripta.com/61-1,,61X
+Tiverton/East Bay Express,3,RIPTA,61-55,http://www.ripta.com/61-1,,61X
+Broadway/Manton,3,RIPTA,27-55,http://www.ripta.com/27,,27
+Broadway/Manton,3,RIPTA,27-56,http://www.ripta.com/27,,27
+Armistice Boulevard,3,RIPTA,80-56,http://www.ripta.com/80,,80
+Armistice Boulevard,3,RIPTA,80-55,http://www.ripta.com/80,,80
+Mineral Spring/North Providence,3,RIPTA,58-56,http://www.ripta.com/58,,58
+Mineral Spring/North Providence,3,RIPTA,58-55,http://www.ripta.com/58,,58
+Weeden Street (Central Falls),3,RIPTA,72-56,http://www.ripta.com/72,,72
+Weeden Street (Central Falls),3,RIPTA,72-55,http://www.ripta.com/72,,72
+Jefferson Boulevard,3,RIPTA,8-56,http://www.ripta.com/8,,8X
+Jefferson Boulevard,3,RIPTA,8-55,http://www.ripta.com/8,,8X
+Lincoln/Woonsocket,3,RIPTA,54-56,http://www.ripta.com/54,,54
+Lincoln/Woonsocket,3,RIPTA,54-55,http://www.ripta.com/54,,54
+East Side/Federal Hill/RI College,3,RIPTA,92-55,http://www.ripta.com/92,,92
+East Side/Federal Hill/RI College,3,RIPTA,92-56,http://www.ripta.com/92,,92
+Central Avenue,3,RIPTA,76-56,http://www.ripta.com/76,,76
+Central Avenue,3,RIPTA,76-55,http://www.ripta.com/76,,76
+Smith Street,3,RIPTA,57-56,http://www.ripta.com/57,,57
+Smith Street,3,RIPTA,57-55,http://www.ripta.com/57,,57
+Providence Schools Service,3,RIPTA,4-56,,,4
+Cranston Street,3,RIPTA,31-56,http://www.ripta.com/31,,31
+Branch Avenue/Bryant University,3,RIPTA,52-55,http://www.ripta.com/52,,52
+Branch Avenue/Bryant University,3,RIPTA,52-56,http://www.ripta.com/52,,52
+Arctic/R.I. Route117 Express,3,RIPTA,12-56,http://www.ripta.com/12,,12X
+Riverside,3,RIPTA,33-56,http://www.ripta.com/33,,33
+URI-Kingston Campus Hillclimber,3,RIPTA,69-56,,,69
+Pascoag,3,RIPTA,9-55,http://www.ripta.com/9,,9X
+Pascoag,3,RIPTA,9-56,http://www.ripta.com/9,,9X
+Warwick Avenue,3,RIPTA,3-56,http://www.ripta.com/3,,3
+Warwick Avenue,3,RIPTA,3-55,http://www.ripta.com/3,,3
+Broad/North Main,3,RIPTA,11-55,http://www.ripta.com/11-1,,R
+Broad/North Main,3,RIPTA,11-56,http://www.ripta.com/11-1,,R
+Dyer/Pocasset/Westminster,3,RIPTA,17-56,http://www.ripta.com/17,,17
+Dyer/Pocasset/Westminster,3,RIPTA,17-55,http://www.ripta.com/17,,17
+Plainfield/Westminster,3,RIPTA,19-55,http://www.ripta.com/19,,19
+Plainfield/Westminster,3,RIPTA,19-56,http://www.ripta.com/19,,19
+Providence/Newport,3,RIPTA,60-55,http://www.ripta.com/60,,60
+Providence/Newport,3,RIPTA,60-56,http://www.ripta.com/60,,60
+Broadway (Newport-Middletown),3,RIPTA,63-55,http://www.ripta.com/63,,63
+stand-by,3,RIPTA,2-56,,,2
