@@ -59,16 +59,6 @@ def convertTime(time):
         seconds = int(s))
 
 
-def loadJSON(json_file_loc):
-
-    jf = open(json_file_loc, "r")
-    js = json.loads(jf.read())
-    jf.close()
-    # js.encode("ascii")
-
-    return js
-
-
 def sortCalendar(cal_file_loc, date):
     """Takes the calendar file (calendar.txt) and matches service patterns
     with days of the week.
@@ -277,11 +267,16 @@ def checkPattern(segment, pattern, days):
 
 class System:
 
-    def __init__(self, data_dir, json_loc, date):
+    def __init__(self, data_dir, date):
 
         # LOAD JSON CONFIG FILE
 
-        self.js = loadJSON(json_loc)
+        json_file_loc = data_dir + "ff_config.json"
+        print ("File opened: " + json_file_loc)
+        jf = open(json_file_loc, "r")
+        self.js = json.loads(jf.read())
+        jf.close()
+        print ("File closed: " + json_file_loc)
 
         # LOAD STOPS FILE
 
