@@ -418,11 +418,6 @@ class Route:
     pass
 
 
-class ServiceGroup:
-
-    pass
-
-
 class Service:
 
     def __init__(self, stop_seq):
@@ -445,36 +440,6 @@ class Service:
     def getStopList(self):
 
         return self.stop_list
-
-
-# class Trip:
-
-#     def __init__(self, trip_id, service, stops_info):
-
-#         self.trip_id = trip_id
-#         self.service = service  # Service that it's a trip of
-#         self.stops_info = stops_info
-
-#         for s in stops_info:
-#             stop = s["stop_id"]
-#             time = s["arrival_time"]
-#             # stops[stop].addTrip(self, time)
-
-#     def __repr__(self):
-
-#         return self.trip_id
-
-#     def getService(self):
-
-#         return self.service
-
-#     def getStopList(self):
-
-#         return self.getService().getStopList()
-
-#     def getStopTimes(self):
-
-#         pass
 
 
 class Stop:
