@@ -359,24 +359,24 @@ class System:
             for s in range(len(serv)-1):
                 path = (serv[s], serv[s+1])
                 # path_services = self.paths[path]
+                stop_obj = self.stops[serv[s]]
                 if path not in self.paths_ua:  # Path has already been assigned
                     if current_seg:
-                        current_seg.setLastStop(serv[s], self.stops[serv[s]])
+                        current_seg.setLastStop(stop_obj)
                         self.segments.append(current_seg)
                         current_seg = None
                         path_services = None
                 elif self.paths[path] == path_services:  # Continue Segment
-                    current_seg.addStop(serv[s])
+                    current_seg.addStop(stop_obj)
                     self.paths_ua.remove(path)
                 else:  # Path has a different set of services
                     # End current Segment:
                     if current_seg:
-                        current_seg.setLastStop(serv[s], self.stops[serv[s]])
+                        current_seg.setLastStop(stop_obj)
                         self.segments.append(current_seg)
                     # Start new Segment:
                     path_services = self.paths[path]
-                    current_seg = Segment(serv[s], self.stops[serv[s]],
-                        path_services)
+                    current_seg = Segment(stop_obj, path_services)
                     self.paths_ua.remove(path)
         if len(self.paths_ua) > 0:
             raise Exception("Not all paths have been assigned to a Segment.")
@@ -519,11 +519,12 @@ class Stop:
 
 class Segment:
 
-    def __init__(self, init_stop_id, init_stop_obj, services):
+    def __init__(self, init_stop, services):
 
-        self.init_stop_obj = init_stop_obj
-        self.last_stop_obj = None
-        self.stops = [init_stop_id]
+        # Note: All stops are Stop objects, not stop_ids
+        self.init_stop = init_stop
+        self.last_stop = None
+        self.stops = [init_stop]
         self.services = services
 
         self.category = None
@@ -534,26 +535,26 @@ class Segment:
 
         return self
 
-    def addStop(self, stop_id):
+    def addStop(self, stop):
 
-        self.stops.append(stop_id)
+        self.stops.append(stop)
 
         return self
 
-    def setLastStop(self, last_stop_id, last_stop_obj):
+    def setLastStop(self, last_stop):
 
-        self.addStop(last_stop_id)
-        self.last_stop_obj = last_stop_obj
+        self.addStop(last_stop)
+        self.last_stop = last_stop
 
         return self
 
     def getInitStop(self):
 
-        return self.init_stop_obj
+        return self.init_stop
 
     def getLastStop(self):
 
-        return self.last_stop_obj
+        return self.last_stop
 
     def getStops(self):
 
@@ -569,10 +570,7 @@ class Segment:
             "type": "Feature",
             "geometry": {
                 "type": "LineString",
-                "coordinates": [
-                    self.init_stop_obj.getLonLat(),
-                    self.last_stop_obj.getLonLat()
-                ]
+                "coordinates": [s.getLonLat() for s in self.stops]
             },
             "properties": {
                 "category": self.category
