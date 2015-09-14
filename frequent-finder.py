@@ -79,11 +79,9 @@ def sortCalendar(cal_file_loc, date):
     def inDateRange(x):
 
         return (int(x["start_date"]) < int(date) < int(x["end_date"]))
-        # Note: 'date' is as given as a parameter to sortCalendar()
 
     cl = filter(inDateRange, list(cr))
 
-    # This can almost certainly be written more elegantly:
     days = {
         "monday": set(),
         "tuesday": set(),
@@ -93,36 +91,15 @@ def sortCalendar(cal_file_loc, date):
         "saturday": set(),
         "sunday": set()
     }
-    # days = {
-    #     "monday": [],
-    #     "tuesday": [],
-    #     "wednesday": [],
-    #     "thursday": [],
-    #     "friday": [],
-    #     "saturday": [],
-    #     "sunday": []
-    # }
     for serv in cl:
         for i in serv:
             if i[-3:] == "day":  # if key is a day of the week
                 if serv[i] == "1":  # if this service_id applies on this day
-                    # days[i].append(serv["service_id"])
                     days[i].add(serv["service_id"])
-    # # Will leave out this part for now, to possibly be added later
-    # # when I decide how to optimize day-handling:
-    # day_patterns = []
-    # for day in days:
-    #     if days[day] not in day_patterns:
-    #         day_patterns.append(days[day])
-    #         # Creates a list of unique "day service patterns"
-    #         # so that we only need to check each combination of services
-    #         # once, instead of (say) checking Monday, Tuesday,
-    #         # Wednesday, etc. individually.
 
     cf.close()
     print ("File closed: " + cal_file_loc)
 
-    # return day_patterns
     return days
 
 
@@ -308,7 +285,6 @@ class System:
         print ("File opened: " + st_file_loc)
         r = csv.DictReader(f)
 
-        # self.trips = groupBy(r, getTripID)
         self.trips = {}
         for stop_time in r:
             trip_id = stop_time["trip_id"]  # act on the list item
@@ -347,13 +323,12 @@ class System:
 
         self.segments = []  # List of segments
         self.paths_ua = set(self.paths)
-        # Set of the paths that haven't yet been assigned to a Segment
+        # paths_ua = set of the paths that haven't been assigned to a Segment
         for serv in self.services:
             current_seg = None
             path_services = None
             for s in range(len(serv)-1):
                 path = (serv[s], serv[s+1])
-                # path_services = self.paths[path]
                 stop_obj = self.stops[serv[s]]
                 if path not in self.paths_ua:  # Path has already been assigned
                     if current_seg:
@@ -447,7 +422,6 @@ class Stop:
         self.stop_name = stop_dict["stop_name"]
         self.stop_desc = stop_dict["stop_desc"]
 
-        # self.services = []
         self.trip_times = {} # keys = time points, values = Trips
         self.stop_times = [] # list of dicts
 
@@ -464,47 +438,12 @@ class Stop:
 
         return self
 
-    # def addTrip(self, trip, time):
-
-    #     if isinstance(trip, Trip):
-    #         if time not in self.trip_times:
-    #             self.trip_times[time] = []
-    #         self.trip_times[time].append(trip)
-    #         # Allows multiple arrivals at a stop for a given time
-    #     else:
-    #         raise Exception("Trip to add must be an instance of Trip")
-
-    #     return self
-
-    # def addService(self, new):
-
-    #     # Modify to include number of times each service stops here?
-    #     if isinstance(new, Service):
-    #         if new not in self.services:
-    #             self.services.append(new)
-    #     else:
-    #         raise Exception("Service to add must be an instance of Service")
-
-    #     return self
-
-    # def getServices(self):
-
-    #     return self.services
-
     def getStopTimes(self, filter_func=None):
 
         if filter_func:
             return filter(filter_func, self.stop_times)
         else:
             return self.stop_times
-
-    def getLon(self):
-
-        return self.stop_lon
-
-    def getLat(self):
-
-        return self.stop_lat
 
     def getLonLat(self):
 
