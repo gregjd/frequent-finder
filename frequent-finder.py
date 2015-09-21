@@ -38,7 +38,7 @@ def getStopList(stop_seq):
 def fixTime(time):
     """Takes a str time and converts the hour to a two-digit value if needed.
 
-    Necessary because GTFS allows AM (morning) times to have a one- or two-digit
+    Needed because GTFS allows AM (morning) times to have a one- or two-digit
     hour, but sorting string times requires two-digit hours to work properly.
     """
 
@@ -55,8 +55,7 @@ def convertTime(time):
 
     h, m, s = time.split(":")
 
-    return datetime.timedelta(hours = int(h), minutes = int(m),
-        seconds = int(s))
+    return datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
 
 
 def sortCalendar(cal_file_loc, date):
@@ -179,9 +178,11 @@ def checkPattern(segment, pattern, days):
             def checkCombo(c):
 
                 # Get stop times for this day and time range:
-                times = stop.getStopTimes(lambda t: bool(t["service_id"] in c) &
-                    (r[u"start_time"] < t["departure_time"] < r[u"end_time"]))
-                times = sorted(times, key = lambda t: t["departure_time"])
+                times = stop.getStopTimes(
+                    lambda t: (bool(t["service_id"] in c)) &
+                    (r[u"start_time"] < t["departure_time"] < r[u"end_time"])
+                )
+                times = sorted(times, key=lambda t: t["departure_time"])
                 times = [convertTime(t["departure_time"]) for t in times]
 
                 # Create fake stop times to represent the start and end times
@@ -211,15 +212,17 @@ def checkPattern(segment, pattern, days):
             # Calculate allowable error:
             # (Note: expects start and end times as strings in "HHMM" format)
             start = datetime.timedelta(
-                hours = int(r["start_time"].encode("ascii")[0:2]),
-                minutes = int(r["start_time"].encode("ascii")[2:4]))
+                hours=int(r["start_time"].encode("ascii")[0:2]),
+                minutes=int(r["start_time"].encode("ascii")[2:4])
+            )
             end = datetime.timedelta(
-                hours = int(r["end_time"].encode("ascii")[0:2]),
-                minutes = int(r["end_time"].encode("ascii")[2:4]))
+                hours=int(r["end_time"].encode("ascii")[0:2]),
+                minutes=int(r["end_time"].encode("ascii")[2:4])
+            )
             duration = end - start
-            headway = datetime.timedelta(minutes = pattern[u"headway"])
+            headway = datetime.timedelta(minutes=pattern[u"headway"])
             min_trips = int(duration.total_seconds()/headway.total_seconds())
-            error_mins = datetime.timedelta(minutes = pattern[u"error_mins"])
+            error_mins = datetime.timedelta(minutes=pattern[u"error_mins"])
             error_times = int(math.ceil(pattern[u"error_pct"]*0.01*min_trips))
 
             for c in combos:
@@ -261,7 +264,7 @@ class System:
         sf = open(s_file_loc, "r")
         print ("File opened: " + s_file_loc)
         sr = csv.DictReader(sf)
-        self.stops = {} # Dict where keys = stop_ids, values = Stop objects
+        self.stops = {}  # Dict where keys = stop_ids, values = Stop objects
         for stop in sr:
             self.stops[stop["stop_id"]] = Stop(stop)
         sf.close()
@@ -274,8 +277,8 @@ class System:
         tf = open(t_file_loc, "r")
         print ("File opened: " + t_file_loc)
         tr = csv.DictReader(tf)
-        self.trip_SIDs = dict(map(lambda x: (x["trip_id"], x["service_id"]), tr))
-        # self.trip_SIDs = dict((x["trip_id"], x["service_id"]) for x in tr))
+        # self.trip_SIDs = dict(map(lambda x: (x["trip_id"], x["service_id"]), tr))
+        self.trip_SIDs = dict((x["trip_id"], x["service_id"]) for x in tr)
         # Keys = trip_ids, values = service_ids
         # print ("Trips compiled.")
         print ("File closed: " + t_file_loc)
@@ -373,13 +376,13 @@ class System:
         }
 
         print ("Saving file: " + new_file_name + " ...")
-        
+
         nf = open(new_file_name, "w")
         json.dump(geoj, nf, indent=4, sort_keys=True)
         nf.close()
 
         print ("Saved file: " + new_file_name)
-        
+
         return
 
 
@@ -400,12 +403,12 @@ class Service:
 
         return self.stop_seq
 
-    def addTrip(self, trip):
+    # def addTrip(self, trip):
 
-        if isinstance(trip, Trip):
-            self.trips.append(trip)
-        else:
-            raise Exception("Trip to add must be an instance of Trip")
+    #     if isinstance(trip, Trip):
+    #         self.trips.append(trip)
+    #     else:
+    #         raise Exception("Trip to add must be an instance of Trip")
 
     def getStopList(self):
 
@@ -422,8 +425,8 @@ class Stop:
         self.stop_name = stop_dict["stop_name"]
         self.stop_desc = stop_dict["stop_desc"]
 
-        self.trip_times = {} # keys = time points, values = Trips
-        self.stop_times = [] # list of dicts
+        self.trip_times = {}  # keys = time points, values = Trips
+        self.stop_times = []  # list of dicts
 
     def __repr__(self):
 
@@ -448,7 +451,6 @@ class Stop:
     def getLonLat(self):
 
         return [self.stop_lon, self.stop_lat]
-
 
 
 class Segment:
