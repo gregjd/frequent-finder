@@ -17,6 +17,8 @@ The three main components of FrequentFinder are:
 
 Note that there is no need for me to build something that converts GeoJSON to shapefiles, as this can already be done in existing GIS programs.
 
+See [my website](http://www.gregjd.com/) for links to more of my work.
+
 <br>
 
 ### Current status
