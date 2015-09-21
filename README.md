@@ -11,11 +11,9 @@ There are two basic pieces to the puzzle. One is taking the GTFS feed and produc
 
 The three main components of FrequentFinder are:
 
-*frequent-finder.py (will likely be renamed ff.py): GTFS to GeoJSON, using user-defined parameters for frequency categories
-
-* ff_mb.js: GeoJSON to interactive map
-
-* ff_d3.js: GeoJSON to SVG
+* **frequent-finder.py** (will likely be renamed ff.py): GTFS to GeoJSON, using user-defined parameters for frequency categories
+* **ff_mb.js**: GeoJSON to interactive map
+* **ff_d3.js**: GeoJSON to SVG
 
 Note that there is no need for me to build something that converts GeoJSON to shapefiles, as this can already be done in existing GIS programs.
 
