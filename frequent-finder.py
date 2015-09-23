@@ -4,250 +4,11 @@ import datetime
 import math
 
 
-def getTripID(stop_time):
-    """Returns the trip_id from a stop time."""
-
-    return stop_time["trip_id"]
-
-
-def getStopSeq(trip):
-    """Returns the stop sequence for a given trip.
-
-    Args:
-        trip: List of dicts, where the list represents one trip
-            and each dict holds the data for a stop on that trip
-
-    Returns:
-        A tuple of the stop_ids.
-    """
-
-    # Shouldn't need this:
-    if type(trip) != list:
-        raise Exception("Argument must be a list.")
-
-    return tuple(map(lambda x: str(x["stop_id"]), trip))
-    # return tuple(str(x["stop_id"]) for x in trip)
-
-
-def getStopList(stop_seq):
-    """Takes a stop sequence string and returns a list of stop IDs."""
-
-    return list(stop_seq)
-
-
-def fixTime(time):
-    """Takes a str time and converts the hour to a two-digit value if needed.
-
-    Needed because GTFS allows AM (morning) times to have a one- or two-digit
-    hour, but sorting string times requires two-digit hours to work properly.
-    """
-
-    if time.find(":") == 2:
-        return time
-    elif time.find(":") == 1:
-        return "0" + time
-    else:
-        raise Exception("Time must begin with a one- or two-digit hour.")
-
-
-def convertTime(time):
-    """Converts a str time ("HH:MM:SS") to a datetime.timedelta object."""
-
-    h, m, s = time.split(":")
-
-    return datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
-
-
-def sortCalendar(cal_file_loc, date):
-    """Takes the calendar file (calendar.txt) and matches service patterns
-    with days of the week.
-
-    Args:
-        cal_file_loc: String location of the calendar file
-        date: Int/string date (YYYYMMDD) to be used to find the applicable
-            service period
-
-    Returns:
-        A dict where keys = days, values = sets of effective service IDs
-    """
-
-    cf = open(cal_file_loc, "r")
-    print ("File opened: " + cal_file_loc)
-    cr = csv.DictReader(cf)
-
-    def inDateRange(x):
-
-        return (int(x["start_date"]) < int(date) < int(x["end_date"]))
-
-    cl = filter(inDateRange, list(cr))
-
-    days = {
-        "monday": set(),
-        "tuesday": set(),
-        "wednesday": set(),
-        "thursday": set(),
-        "friday": set(),
-        "saturday": set(),
-        "sunday": set()
-    }
-    for serv in cl:
-        for i in serv:
-            if i[-3:] == "day":  # if key is a day of the week
-                if serv[i] == "1":  # if this service_id applies on this day
-                    days[i].add(serv["service_id"])
-
-    cf.close()
-    print ("File closed: " + cal_file_loc)
-
-    return days
-
-
-def groupBy(iterable, keyfunc):
-    """Groups items in iterable based on keyfunc.
-
-    >>> Might get rid of this function.
-
-    Args:
-        iterable: dict (or list) of dicts, containing items to be grouped
-        keyfunc: a function that takes an item (from iterable) as its argument;
-            used to return the key for groups_dict
-
-    Returns:
-        A dict where keys are the groups identified by keyfunc. If the iterable
-        is a list, the values of the returned dict will be lists. If the
-        iterable is a dict, the values of the returned dict will be dicts.
-        As implemented, if iterable is a dict, keyfunc will act on the value
-        of each item in the dict; the key will be ignored, though it will be
-        included in the returned dict.
-    """
-
-    groups_dict = {}
-    if type(iterable) == dict:
-        for i in iterable:
-            key = keyfunc(iterable[i])  # act on the value of the dict item
-            if key not in groups_dict:
-                groups_dict[key] = {}
-            groups_dict[key][i] = iterable[i]
-    elif (type(iterable) == list) or (isinstance(iterable, csv.DictReader)):
-        for i in iterable:
-            key = keyfunc(i)  # act on the list item
-            if key not in groups_dict:
-                groups_dict[key] = []
-            groups_dict[key].append(i)
-    else:
-        raise Exception("Argument 'iterable' must be a dict or list.")
-
-    return groups_dict
-
-
-def assignCategory(js, days):
-    """Returns a function that assigns a frequency category to a Segment."""
-
-    def assignCategoryFunc(segment):
-
-        # Not really necessary, but here for safety:
-        if not isinstance(segment, Segment):
-            raise Exception("Argument 'segment' must be a Segment.")
-
-        return segment.setCategory(findCategory(segment, js, days))
-
-    return assignCategoryFunc
-
-
-def findCategory(segment, js, days):
-    """Finds the appropriate frequency pattern for a given Segment.
-
-    Proceeds through the JSON contents in order, so if the JSON config file
-    (ff-config.json) contains multiple frequency categories, they should be
-    in order of decreasing frequency, as this function will return the first
-    category whose standards are met for that segment.
-    """
-
-    for pattern in js:
-        if checkPattern(segment, pattern, days):
-            return pattern["name"]
-    return None
-
-
-def checkPattern(segment, pattern, days):
-
-    def checkStop(stop):
-
-        def checkRule(r):
-
-            def checkCombo(c):
-
-                # Get stop times for this day and time range:
-                times = stop.getStopTimes(
-                    lambda t: (bool(t["service_id"] in c)) &
-                    (r[u"start_time"] < t["departure_time"] < r[u"end_time"])
-                )
-                times = sorted(times, key=lambda t: t["departure_time"])
-                times = [convertTime(t["departure_time"]) for t in times]
-
-                # Create fake stop times to represent the start and end times
-                times.insert(0, start)
-                times.append(end)
-
-                # Check if there are enough total trips in the day:
-                if len(times) < min_trips-3:  # -3 in case of weird edge cases
-                    return False
-
-                # Go through all stop times and check headways:
-                errors = 0
-                for i in range(len(times)-1):
-                    if (times[i+1] - times[i]) > headway:
-                        if (times[i+1] - times[i]) <= (headway + error_mins):
-                            errors += 1
-                        else:
-                            return False
-                    if errors > error_times:
-                        return False
-
-                return True
-
-            # Get unique combinations of service_ids for the days in this rule:
-            combos = set(tuple(days[x.encode("ascii")]) for x in r[u"days"])
-
-            # Calculate allowable error:
-            # (Note: expects start and end times as strings in "HHMM" format)
-            start = datetime.timedelta(
-                hours=int(r["start_time"].encode("ascii")[0:2]),
-                minutes=int(r["start_time"].encode("ascii")[2:4])
-            )
-            end = datetime.timedelta(
-                hours=int(r["end_time"].encode("ascii")[0:2]),
-                minutes=int(r["end_time"].encode("ascii")[2:4])
-            )
-            duration = end - start
-            headway = datetime.timedelta(minutes=pattern[u"headway"])
-            min_trips = int(duration.total_seconds()/headway.total_seconds())
-            error_mins = datetime.timedelta(minutes=pattern[u"error_mins"])
-            error_times = int(math.ceil(pattern[u"error_pct"]*0.01*min_trips))
-
-            for c in combos:
-                if not checkCombo(c):
-                    return False
-            return True
-
-        for rule in pattern[u"rules"]:
-            if not checkRule(rule):
-                return False
-        return True
-
-    # Check the init stop across all days before checking the last stop,
-    # because it's unlikely the two will have different results for checkStop,
-    # so we might as well try to return a False value as soon as possible.
-    if not checkStop(segment.getInitStop()):
-        return False
-    elif not checkStop(segment.getLastStop()):
-        return False
-    return True
-
-
 class System:
 
     def __init__(self, data_dir, date):
+
+        # To-do: break this code into separate functions
 
         # LOAD JSON CONFIG FILE
 
@@ -386,35 +147,6 @@ class System:
         return
 
 
-class Route:
-
-    pass
-
-
-class Service:
-
-    def __init__(self, stop_seq):
-
-        self.stop_seq = stop_seq
-        self.stop_list = getStopList(stop_seq)
-        self.trips = []
-
-    def __repr__(self):
-
-        return self.stop_seq
-
-    # def addTrip(self, trip):
-
-    #     if isinstance(trip, Trip):
-    #         self.trips.append(trip)
-    #     else:
-    #         raise Exception("Trip to add must be an instance of Trip")
-
-    def getStopList(self):
-
-        return self.stop_list
-
-
 class Stop:
 
     def __init__(self, stop_dict):
@@ -512,6 +244,240 @@ class Segment:
                 "category": self.category
             }
         }
+
+
+def assignCategory(js, days):
+    """Returns a function that assigns a frequency category to a Segment."""
+
+    def assignCategoryFunc(segment):
+
+        # Not really necessary, but here for safety:
+        if not isinstance(segment, Segment):
+            raise Exception("Argument 'segment' must be a Segment.")
+
+        return segment.setCategory(findCategory(segment, js, days))
+
+    return assignCategoryFunc
+
+
+def findCategory(segment, js, days):
+    """Finds the appropriate frequency pattern for a given Segment.
+
+    Proceeds through the JSON contents in order, so if the JSON config file
+    (ff-config.json) contains multiple frequency categories, they should be
+    in order of decreasing frequency, as this function will return the first
+    category whose standards are met for that segment.
+    """
+
+    for pattern in js:
+        if checkPattern(segment, pattern, days):
+            return pattern["name"]
+    return None
+
+
+def checkPattern(segment, pattern, days):
+
+    def checkStop(stop):
+
+        def checkRule(r):
+
+            def checkCombo(c):
+
+                # Get stop times for this day and time range:
+                times = stop.getStopTimes(
+                    lambda t: (bool(t["service_id"] in c)) &
+                    (r[u"start_time"] < t["departure_time"] < r[u"end_time"])
+                )
+                times = sorted(times, key=lambda t: t["departure_time"])
+                times = [convertTime(t["departure_time"]) for t in times]
+
+                # Create fake stop times to represent the start and end times
+                times.insert(0, start)
+                times.append(end)
+
+                # Check if there are enough total trips in the day:
+                if len(times) < min_trips-3:  # -3 in case of weird edge cases
+                    return False
+
+                # Go through all stop times and check headways:
+                errors = 0
+                for i in range(len(times)-1):
+                    if (times[i+1] - times[i]) > headway:
+                        if (times[i+1] - times[i]) <= (headway + error_mins):
+                            errors += 1
+                        else:
+                            return False
+                    if errors > error_times:
+                        return False
+
+                return True
+
+            # Get unique combinations of service_ids for the days in this rule:
+            combos = set(tuple(days[x.encode("ascii")]) for x in r[u"days"])
+
+            # Calculate allowable error:
+            # (Note: expects start and end times as strings in "HHMM" format)
+            start = datetime.timedelta(
+                hours=int(r["start_time"].encode("ascii")[0:2]),
+                minutes=int(r["start_time"].encode("ascii")[2:4])
+            )
+            end = datetime.timedelta(
+                hours=int(r["end_time"].encode("ascii")[0:2]),
+                minutes=int(r["end_time"].encode("ascii")[2:4])
+            )
+            duration = end - start
+            headway = datetime.timedelta(minutes=pattern[u"headway"])
+            min_trips = int(duration.total_seconds()/headway.total_seconds())
+            error_mins = datetime.timedelta(minutes=pattern[u"error_mins"])
+            error_times = int(math.ceil(pattern[u"error_pct"]*0.01*min_trips))
+
+            for c in combos:
+                if not checkCombo(c):
+                    return False
+            return True
+
+        for rule in pattern[u"rules"]:
+            if not checkRule(rule):
+                return False
+        return True
+
+    # Check the init stop across all days before checking the last stop,
+    # because it's unlikely the two will have different results for checkStop,
+    # so we might as well try to return a False value as soon as possible.
+    if not checkStop(segment.getInitStop()):
+        return False
+    elif not checkStop(segment.getLastStop()):
+        return False
+    return True
+
+
+def sortCalendar(cal_file_loc, date):
+    """Takes the calendar file (calendar.txt) and matches service patterns
+    with days of the week.
+
+    Args:
+        cal_file_loc: String location of the calendar file
+        date: Int/string date (YYYYMMDD) to be used to find the applicable
+            service period
+
+    Returns:
+        A dict where keys = days, values = sets of effective service IDs
+    """
+
+    cf = open(cal_file_loc, "r")
+    print ("File opened: " + cal_file_loc)
+    cr = csv.DictReader(cf)
+
+    def inDateRange(x):
+
+        return (int(x["start_date"]) < int(date) < int(x["end_date"]))
+
+    cl = filter(inDateRange, list(cr))
+    days = {
+        "monday": set(),
+        "tuesday": set(),
+        "wednesday": set(),
+        "thursday": set(),
+        "friday": set(),
+        "saturday": set(),
+        "sunday": set()
+    }
+    for serv in cl:
+        for i in serv:
+            if i[-3:] == "day":  # if key is a day of the week
+                if serv[i] == "1":  # if this service_id applies on this day
+                    days[i].add(serv["service_id"])
+
+    cf.close()
+    print ("File closed: " + cal_file_loc)
+
+    return days
+
+
+def getTripID(stop_time):
+    """Returns the trip_id from a stop time."""
+
+    return stop_time["trip_id"]
+
+
+def getStopSeq(trip):
+    """Returns the stop sequence for a given trip.
+
+    Args:
+        trip: List of dicts, where the list represents one trip
+            and each dict holds the data for a stop on that trip
+
+    Returns:
+        A tuple of the stop_ids.
+    """
+
+    # Shouldn't need this:
+    if type(trip) != list:
+        raise Exception("Argument must be a list.")
+
+    # return tuple(map(lambda x: str(x["stop_id"]), trip))
+    return tuple(str(x["stop_id"]) for x in trip)
+
+
+def fixTime(time):
+    """Takes a str time and converts the hour to a two-digit value if needed.
+
+    Needed because GTFS allows AM (morning) times to have a one- or two-digit
+    hour, but sorting string times requires two-digit hours to work properly.
+    """
+
+    if time.find(":") == 2:
+        return time
+    elif time.find(":") == 1:
+        return "0" + time
+    else:
+        raise Exception("Time must begin with a one- or two-digit hour.")
+
+
+def convertTime(time):
+    """Converts a str time ("HH:MM:SS") to a datetime.timedelta object."""
+
+    h, m, s = time.split(":")
+
+    return datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
+
+
+def groupBy(iterable, keyfunc):
+    """Groups items in iterable based on keyfunc.
+
+    >>> Might get rid of this function.
+
+    Args:
+        iterable: dict (or list) of dicts, containing items to be grouped
+        keyfunc: a function that takes an item (from iterable) as its argument;
+            used to return the key for groups_dict
+
+    Returns:
+        A dict where keys are the groups identified by keyfunc. If the iterable
+        is a list, the values of the returned dict will be lists. If the
+        iterable is a dict, the values of the returned dict will be dicts.
+        As implemented, if iterable is a dict, keyfunc will act on the value
+        of each item in the dict; the key will be ignored, though it will be
+        included in the returned dict.
+    """
+
+    groups_dict = {}
+    if type(iterable) == dict:
+        for i in iterable:
+            key = keyfunc(iterable[i])  # act on the value of the dict item
+            if key not in groups_dict:
+                groups_dict[key] = {}
+            groups_dict[key][i] = iterable[i]
+    elif (type(iterable) == list) or (isinstance(iterable, csv.DictReader)):
+        for i in iterable:
+            key = keyfunc(i)  # act on the list item
+            if key not in groups_dict:
+                groups_dict[key] = []
+            groups_dict[key].append(i)
+    else:
+        raise Exception("Argument 'iterable' must be a dict or list.")
+
+    return groups_dict
 
 
 if __name__ == "__main__":
