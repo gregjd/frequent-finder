@@ -1,0 +1,46 @@
+[
+    {
+        "name": "High Frequency",
+        "headway": 12,
+        "error_mins": 8,
+        "error_pct": 10,
+        "rules": [
+            {
+                "days": ["saturday"],
+                "start_time": "1030",
+                "end_time": "1700"
+            },
+            {
+                "days": ["monday", "tuesday", "wednesday", "thursday", "friday"],
+                "start_time": "0700",
+                "end_time": "1830"
+            }
+        ]
+    },
+    {
+        "name": "Medium Frequency",
+        "headway": 20,
+        "error_mins": 10,
+        "error_pct": 10,
+        "rules": [
+            {
+                "days": ["monday", "tuesday", "wednesday", "thursday", "friday"],
+                "start_time": "0730",
+                "end_time": "1830"
+            }
+        ]
+    },
+    {
+        "name": "Basic Frequency",
+        "headway": 30,
+        "error_mins": 15,
+        "error_pct": 10,
+        "rules": [
+            {
+                "days": ["monday", "tuesday", "wednesday", "thursday", "friday"],
+                "start_time": "0730",
+                "end_time": "1800"
+            }
+        ]
+    }
+]
