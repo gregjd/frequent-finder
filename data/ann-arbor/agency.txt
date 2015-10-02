@@ -1,0 +1,2 @@
+agency_phone,agency_fare_url,agency_url,agency_id,agency_name,agency_timezone,agency_lang
+,,http://www.TheRide.org,,Ann Arbor Area Transportation Authority,America/Detroit,en
