@@ -45,7 +45,7 @@ I am planning a number of other enhancements to FrequentFinder. I will also writ
 
 There are several ways you can run frequent-finder.py, but here is one. It requires having Python 2.7 and QGIS installed. This should take about 5-10 minutes if you're doing it for the first time.
 
-**1.** Download the GTFS files for your city of interest. You should be able to find them at the [GTFS Data Exchange](http://www.gtfs-data-exchange.com/), but if you want it to feel more "official" you can go to your transit agency's website and see if they have the data there.
+**1.** Download the GTFS files for your city of interest. You should be able to find them at the [GTFS Data Exchange](http://www.gtfs-data-exchange.com/agencies), but if you want it to feel more "official" you can go to your transit agency's website and see if they have the data there.
 
 **2.** Create a folder and copy `frequent-finder.py` to the folder. Rename it to `ff.py`. (If you don't have GitHub installed on your computer, you can also just [go to the file](https://github.com/gregjd/frequent-finder/blob/master/frequent-finder.py), copy its contents, paste them into a blank text document using a simple text editor, and name it `ff.py`. Make sure there's no `.txt` extension at the end of the name after you save it.)
 
@@ -93,13 +93,13 @@ The argument to `saveGeoJSON` should be the location/name of your output GeoJSON
 
 ### Unexpected results
 
-If you resulting frequent network map is not what you envisioned, there could be several reasons.
+If your resulting frequent network map is not what you envisioned, there could be several reasons.
 
 One is that there's a problem with the data. Remember the good old saying, "garbage in, garbage out." FrequentFinder can only work its magic on what it was given. Hopefully, though, this isn't the issue.
 
 A larger likely culprit is start and end times. FrequentFinder applies the same frequency standard all day from the given `start_time` to the given `end_time`. It does not discriminate as to whether frequency standard violations are in the middle of the day or at the beginning/end, as standards are standards. Try setting a later `start_time` and earlier `end_time` and see if your results change. Also see if your transit agency holds Sunday schedules to the frequency standards.
 
-It could also be that your transit agency is exaggerating its claims. For example, a supposed "15-minute map" might really be a map of services that come four times an hour (e.g. departures at 9:00, 9:10, 9:30, and 9:40). FrequentFinder will sniff this out, even if your agency isn't being upfront about it. Alternatively, it could be that a often adheres to a frequency standard, but there are more "errors" than you have allowed for in your `ff_config.json` file. And note that a *single* violation of the `error_mins` allowance will disqualify a service from a given frequency category.
+It could also be that your transit agency is exaggerating its claims. For example, a supposed "15-minute map" might really be a map of services that come four times an hour (e.g. departures at 9:00, 9:10, 9:30, and 9:40). FrequentFinder will sniff this out, even if your agency isn't being upfront about it. Alternatively, it could be that a route/segment often adheres to a frequency standard, but there are more "errors" than you have allowed for in your `ff_config.json` file. And note that a *single* violation of the `error_mins` allowance will disqualify a service from a given frequency category.
 
 Finally, there could be an issue with FrequentFinder. Please let me know if you think this is the case! Due to the complexity of the program and the transit data that's being fed to it, it's hard to say for sure whether your results are accurate or not. I think they should be, but I make no promises. I haven't yet written any test cases of complex systems because that would require going through all the schedules by hand to try to figure out what the results "should" be, and that's not a high priority right now, given how long that would take due to FrequentFinder's precision.
 
