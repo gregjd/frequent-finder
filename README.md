@@ -41,6 +41,72 @@ I am planning a number of other enhancements to FrequentFinder. I will also writ
 
 <br>
 
+### Usage
+
+There are several ways you can run frequent-finder.py, but here is one. It requires having Python 2.7 and QGIS installed. This should take about 5-10 minutes if you're doing it for the first time.
+
+**1.** Download the GTFS files for your city of interest. You should be able to find them at the [GTFS Data Exchange](http://www.gtfs-data-exchange.com/), but if you want it to feel more "official" you can go to your transit agency's website and see if they have the data there.
+
+**2.** Create a folder and copy `frequent-finder.py` to the folder. Rename it to `ff.py`. (If you don't have GitHub installed on your computer, you can also just [go to the file](https://github.com/gregjd/frequent-finder/blob/master/frequent-finder.py), copy its contents, paste them into a blank text document using a simple text editor, and name it `ff.py`. Make sure there's no `.txt` extension at the end of the name after you save it.)
+
+**3.** Extract all the GTFS files you downloaded. I recommend placing them in a folder with your city as its name, as a sub-folder of a "data" folder, as a sub-folder of the original folder (containing `ff.py`). See the directory structure of this repo for an example.
+
+**4.** Create a `ff_config.json` file in your folder that has the GTFS data. The basic format should look like [this](https://github.com/gregjd/frequent-finder/blob/master/data/spokane/ff_config.json). Actually, I suggest copying the contents of that file to use as a template. This file is structured as one large array, with each object in the array being a frequency category. The sample values listed should give you a pretty good idea of what kind of input is expected. Specifically:
+
+* `name` is the name for your category.
+* `headway` is the maximum headway (time between buses/trains) in minutes.
+* `error_mins` is the number of minutes allowed for error, i.e. slight deviations from the maximum headway. If you have a 15-minute headway and a 3-minute error, that means it's okay for two buses/trains to be 18 minutes apart. But...
+* `error_pct` is what percent of the time such error is allowed. So a value of 5 means that if you take the minimum number of buses/trains needed to meet the headway standard, and take 5% of that number, that's how many times a headway of `error_mins` is allowed before the corridor in question does not qualify for this frequency standard anymore.
+* `rules` is an array of rules for days of the week and start/end times on those days. Include the days of the week for which you want to apply the frequency test. Each rule is an object with three fields: `days`, `start_time`, and `end_time`. If you have multiple rules (most likely in the form of a later `start_time` and earlier `end_time` on the weekends), you should put the rules in order of likely increasing service, i.e. Sundays first, then Saturdays, then weekdays. This will make the program run faster.
+* `days` is an array property of a rule. It specifies the days for which the rule's start and end times apply. You'll probably at least want to put all weekdays in here. The days should be all lowercase.
+* `start_time` is a property of a rule. It represents the time of day the program should start checking for the headway standard to be met. It should be a four-digit number in 24-hour time, surrounded by quotation marks.
+* `end_time` is a property of a rule. It represents the time of day the program should stop checking for the headway standard to be met. It should be a four-digit number in 24-hour time, surrounded by quotation marks.
+
+**5.** Go to your favorite place to run Python. This could be the terminal, IDLE, or wherever. (For me, it's [SublimeREPL](https://github.com/wuub/SublimeREPL).) Type the following commands:
+```python
+import os
+os.chdir("C:/your-folder")
+```
+
+Of course, `your-folder` should be the extension for your folder that has `ff.py` in it. If you want to verify that you're in the right place now, type `os.getcwd()` and you should see the correct folder path. Now type:
+```python
+import ff
+freq = ff.System("data/your-city/", 20151001)
+```
+
+Note that in the second line, the string argument is the path for the folder containing your GTFS data, with `data/your-city/` being the suggested location, replacing `your-city` with the city name. The second argument to `System` is a number representing a date in YYYYMMDD format. The program will take this date and find the appropriate set of schedules for the time period the date falls within.
+
+After you enter the second line, you should see a bunch of messages indicating files were opened and closed. Then enter:
+```python
+freq.saveGeoJSON("data/your-city/frequency.geojson")
+```
+
+The argument to `saveGeoJSON` should be the location/name of your output GeoJSON file.
+
+**6.** Open up QGIS. Go to add a vector layer (Layer > Add Layer > Add Vector Layer). In the popup box, click *Browse* and find the GeoJSON file. Click *Open*. You should now see a map that looks like your transit system.
+
+**7.** In the list of layers (probably on the left side of the screen), double-click the layer name. On the left side of the popup box, click *Style*. At the top of the main panel, click the drop-down that says *Single Symbol* and change it to *Categorized*. Toward the bottom of the box, click the *Classify* button. The list of frequency categories (that applied to this data set) should be above. The blank category is for corridors that didn't meet any frequency standard. If you double-click on a symbol, you can change its appearance. I recommend thicker lines for more frequent services and the color red for your highest frequency category. When you're done, click *OK* at the bottom of the layer properties box. Voila! Your frequent network map has arrived.
+
+[I will add more in-depth instructions with screenshots for people with little coding/QGIS experience.]
+
+<br>
+
+### Unexpected results
+
+If you resulting frequent network map is not what you envisioned, there could be several reasons.
+
+One is that there's a problem with the data. Remember the good old saying, "garbage in, garbage out." FrequentFinder can only work its magic on what it was given. Hopefully, though, this isn't the issue.
+
+A larger likely culprit is start and end times. FrequentFinder applies the same frequency standard all day from the given `start_time` to the given `end_time`. It does not discriminate as to whether frequency standard violations are in the middle of the day or at the beginning/end, as standards are standards. Try setting a later `start_time` and earlier `end_time` and see if your results change. Also see if your transit agency holds Sunday schedules to the frequency standards.
+
+It could also be that your transit agency is exaggerating its claims. For example, a supposed "15-minute map" might really be a map of services that come four times an hour (e.g. departures at 9:00, 9:10, 9:30, and 9:40). FrequentFinder will sniff this out, even if your agency isn't being upfront about it. Alternatively, it could be that a often adheres to a frequency standard, but there are more "errors" than you have allowed for in your `ff_config.json` file. And note that a *single* violation of the `error_mins` allowance will disqualify a service from a given frequency category.
+
+Finally, there could be an issue with FrequentFinder. Please let me know if you think this is the case! Due to the complexity of the program and the transit data that's being fed to it, it's hard to say for sure whether your results are accurate or not. I think they should be, but I make no promises. I haven't yet written any test cases of complex systems because that would require going through all the schedules by hand to try to figure out what the results "should" be, and that's not a high priority right now, given how long that would take due to FrequentFinder's precision.
+
+*Note:* Most cities I have tried so far have worked fine, but for some reason San Francisco seems to not be classifying anything in either of my two highest frequency categories. That said, it is still separating all segments into one of two categories, and the lowest-frequency services are correctly being put into the lower category. I need to investigate whether this is accurate (meaning, the problem is with the data itself or the schedule) or if there's a problem with FrequentFinder. I think/hope it's the former, but I'm not sure.
+
+<br>
+
 ### Issues and challenges
 
 One of the big challenges of this project is its relationship with the source data. GTFS data is great for "specific" transit information: figuring out what service is available at an exact time and place on an exact day in time. What I'm trying to do is the opposite: create a generalized picture of the transit system. This sparks many questions about how exactly to do this:
@@ -117,7 +183,7 @@ In any case, when it comes to navigating a transit system (or just staring at a 
 
 **How's the speed?**
 
-This really depends. I've gotten results for Spokane in around 10 seconds. I've had Minneapolis's data take longer, though not painfully longer. The key issues here are how much data there is (particularly in the `stop_times.txt` file) and what the patterns in the data are.
+This really depends. I've gotten results for Spokane in around 10 seconds, while San Francisco's (SFMTA) took about a minute and a half. The key issues here are how much data there is (particularly in the `stop_times.txt` file) and what the patterns in the data are.
 
 Regardless, this doesn't seem like a big deal right now. For starters, FrequentFinder isn't really about blazing speed, since it's not intended to be an in-the-moment service. The current runtime is fine.
 
