@@ -8,6 +8,8 @@ class System:
 
     def __init__(self, data_dir, date):
 
+        self.data_dir = data_dir
+
         # To-do: break this code into separate functions
 
         # LOAD JSON CONFIG FILE
@@ -39,8 +41,10 @@ class System:
         print ("File opened: " + t_file_loc)
         tr = csv.DictReader(tf)
         # self.trip_SIDs = dict(map(lambda x: (x["trip_id"], x["service_id"]), tr))
-        self.trip_SIDs = dict((x["trip_id"], x["service_id"]) for x in tr)
-        # Keys = trip_ids, values = service_ids
+        # self.trip_SIDs = dict((x["trip_id"], x["service_id"]) for x in tr)
+        # # Keys = trip_ids, values = service_ids
+        self.trips = dict((t_dict["trip_id"], Trip(t_dict)) for t_dict in tr)
+        # Keys = trip_ids, values = Trip objects
         # print ("Trips compiled.")
         print ("File closed: " + t_file_loc)
 
@@ -49,14 +53,16 @@ class System:
         print ("File opened: " + st_file_loc)
         r = csv.DictReader(f)
 
-        self.trips = {}
+        # self.trips = {}
         for stop_time in r:
             trip_id = stop_time["trip_id"]  # act on the list item
-            if trip_id not in self.trips:
-                self.trips[trip_id] = []
-            self.trips[trip_id].append(stop_time)
+            # if trip_id not in self.trips:
+            #     self.trips[trip_id] = []
+            # self.trips[trip_id].append(stop_time)
+            self.trips[trip_id].addStopTime(stop_time)
             stop_time["departure_time"] = fixTime(stop_time["departure_time"])
-            stop_time["service_id"] = self.trip_SIDs[trip_id]
+            # stop_time["service_id"] = self.trip_SIDs[trip_id]
+            stop_time["service_id"] = self.trips[trip_id].getServiceID()
             self.stops[stop_time["stop_id"]].addStopTime(stop_time)
         # Takes the stop_times file and returns a dict where
         # keys = trip_ids, values = lists of dicts where
@@ -64,10 +70,12 @@ class System:
         # Adds each stop_time to its respective Stop
         print ("Trips aggregated.")
 
-        self.services = groupBy(self.trips, getStopSeq)
-        # Takes self.trips and returns a dict where
-        # keys = stop sequence tuples, values = dicts from self.trips
-        # (where keys = trip_ids, values = lists of stop info dicts)
+        # self.services = groupBy(self.trips, getStopSeq)
+        self.services = set(t.getStopSeq() for t in self.trips.values())
+        # Takes self.trips and returns a set of stop sequence tuples
+        # # Takes self.trips and returns a dict where
+        # # keys = stop sequence tuples, values = dicts from self.trips
+        # # (where keys = trip_ids, values = lists of stop info dicts)
         print ("Services aggregated.")
 
         self.paths = {}  # Keys = path tuples (stop0, stop1), values = dicts
@@ -127,6 +135,33 @@ class System:
 
         self.ss = map(assignCategory(self.js, self.days), self.segments)
 
+    def readCSV(self, file_name, function):
+        """Reads a CSV file, creates a DictReader, and runs a given function.
+
+        Args:
+            file_name: The str name of the file, including '.txt' (or '.csv').
+            function: The function to be run, which accepts a single argument
+                (the csv.DictReader generated from the CSV)
+
+        Returns:
+            Nothing.
+
+        Side effects:
+            The side effects of 'function'.
+        """
+
+        file_loc = self.data_dir + file_name
+        f = open(file_loc, "r")
+        print ("File opened: " + file_loc)
+        r = csv.DictReader(f)
+
+        function(r)
+
+        f.close()
+        print ("File closed: " + file_loc)
+
+        return
+
     def saveGeoJSON(self, new_file_name):
 
         print ("Generating GeoJSON export.")
@@ -145,6 +180,102 @@ class System:
         print ("Saved file: " + new_file_name)
 
         return
+
+
+class StopTime:
+
+    def __init__(self, stop_time_dict, service_id):
+
+        self.departure_time = stop_time_dict["departure_time"]
+        self.trip_id = stop_time_dict["trip_id"]
+        self.service_id = service_id
+
+        self.service = None  # Will be written later
+
+    def getTime(self):
+
+        return self.departure_time
+
+    def getTripID(self):
+
+        return self.trip_id
+
+    def getServiceID(self):
+
+        return self.service_id
+
+    def getService(self):
+
+        return self.service
+
+
+class Trip:
+
+    def __init__(self, trip_dict):
+
+        self.trip_id = trip_dict["trip_id"]
+        self.service_id = trip_dict["service_id"]
+        self.shape_id = trip_dict["shape_id"]
+        self.route_id = trip_dict["route_id"]
+
+        self.stop_times = []
+        self.service = None
+
+    def addStopTime(self, stop_time):
+
+        self.stop_times.append(stop_time)
+
+        return self
+
+    def getTripID(self):
+
+        return self.trip_id
+
+    def getServiceID(self):
+
+        return self.service_id
+
+    def getShapeID(self):
+
+        return self.shape_id
+
+    def getRouteID(self):
+
+        return self.route_id
+
+    def getStopTimes(self):
+
+        return self.stop_times
+
+    def getStopSeq(self):
+
+        return tuple(str(x["stop_id"]) for x in self.stop_times)
+
+    def getService(self):
+
+        return self.service
+
+
+class Service:
+
+    def __init__(self):
+
+        self.stop_seq = None
+
+        self.trips = None
+
+    def getStopSeq(self):
+
+        return self.stop_seq
+
+    def getTrips(self):
+
+        return self.trips
+
+
+class Route:
+
+    pass
 
 
 class Stop:
@@ -286,6 +417,7 @@ def checkPattern(segment, pattern, days):
                 # Get stop times for this day and time range:
                 times = stop.getStopTimes(
                     lambda t: (bool(t["service_id"] in c)) &
+                    # (_____ in segment.getServices()) &
                     (r[u"start_time"] < t["departure_time"] < r[u"end_time"])
                 )
                 times = sorted(times, key=lambda t: t["departure_time"])
@@ -400,23 +532,23 @@ def getTripID(stop_time):
     return stop_time["trip_id"]
 
 
-def getStopSeq(trip):
-    """Returns the stop sequence for a given trip.
+# def getStopSeq(trip):
+#     """Returns the stop sequence for a given trip.
 
-    Args:
-        trip: List of dicts, where the list represents one trip
-            and each dict holds the data for a stop on that trip
+#     Args:
+#         trip: List of dicts, where the list represents one trip
+#             and each dict holds the data for a stop on that trip
 
-    Returns:
-        A tuple of the stop_ids.
-    """
+#     Returns:
+#         A tuple of the stop_ids.
+#     """
 
-    # Shouldn't need this:
-    if type(trip) != list:
-        raise Exception("Argument must be a list.")
+#     # Shouldn't need this:
+#     if type(trip) != list:
+#         raise Exception("Argument must be a list.")
 
-    # return tuple(map(lambda x: str(x["stop_id"]), trip))
-    return tuple(str(x["stop_id"]) for x in trip)
+#     # return tuple(map(lambda x: str(x["stop_id"]), trip))
+#     return tuple(str(x["stop_id"]) for x in trip)
 
 
 def fixTime(time):
@@ -442,45 +574,46 @@ def convertTime(time):
     return datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
 
 
-def groupBy(iterable, keyfunc):
-    """Groups items in iterable based on keyfunc.
+# def groupBy(iterable, keyfunc):
+#     """Groups items in iterable based on keyfunc.
 
-    >>> Might get rid of this function.
+#     >>> Might get rid of this function.
 
-    Args:
-        iterable: dict (or list) of dicts, containing items to be grouped
-        keyfunc: a function that takes an item (from iterable) as its argument;
-            used to return the key for groups_dict
+#     Args:
+#         iterable: dict (or list) of dicts, containing items to be grouped
+#         keyfunc: a function that takes an item (from iterable) as its argument;
+#             used to return the key for groups_dict
 
-    Returns:
-        A dict where keys are the groups identified by keyfunc. If the iterable
-        is a list, the values of the returned dict will be lists. If the
-        iterable is a dict, the values of the returned dict will be dicts.
-        As implemented, if iterable is a dict, keyfunc will act on the value
-        of each item in the dict; the key will be ignored, though it will be
-        included in the returned dict.
-    """
+#     Returns:
+#         A dict where keys are the groups identified by keyfunc. If the iterable
+#         is a list, the values of the returned dict will be lists. If the
+#         iterable is a dict, the values of the returned dict will be dicts.
+#         As implemented, if iterable is a dict, keyfunc will act on the value
+#         of each item in the dict; the key will be ignored, though it will be
+#         included in the returned dict.
+#     """
 
-    groups_dict = {}
-    if type(iterable) == dict:
-        for i in iterable:
-            key = keyfunc(iterable[i])  # act on the value of the dict item
-            if key not in groups_dict:
-                groups_dict[key] = {}
-            groups_dict[key][i] = iterable[i]
-    elif (type(iterable) == list) or (isinstance(iterable, csv.DictReader)):
-        for i in iterable:
-            key = keyfunc(i)  # act on the list item
-            if key not in groups_dict:
-                groups_dict[key] = []
-            groups_dict[key].append(i)
-    else:
-        raise Exception("Argument 'iterable' must be a dict or list.")
+#     groups_dict = {}
+#     if type(iterable) == dict:
+#         for i in iterable:
+#             key = keyfunc(iterable[i])  # act on the value of the dict item
+#             if key not in groups_dict:
+#                 groups_dict[key] = {}
+#             groups_dict[key][i] = iterable[i]
+#     elif (type(iterable) == list) or (isinstance(iterable, csv.DictReader)):
+#         for i in iterable:
+#             key = keyfunc(i)  # act on the list item
+#             if key not in groups_dict:
+#                 groups_dict[key] = []
+#             groups_dict[key].append(i)
+#     else:
+#         raise Exception("Argument 'iterable' must be a dict or list.")
 
-    return groups_dict
+#     return groups_dict
 
 
 if __name__ == "__main__":
 
-    system = System("data/spokane/", "ff-config.json", 20150808)
+    # system = System("data/spokane/", "ff-config.json", 20150808)
+    system = System("data/spokane/", 20150808)
     system.saveGeoJSON("data/spokane/frequency.geojson")
