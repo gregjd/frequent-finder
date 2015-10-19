@@ -8,12 +8,6 @@ class System:
 
     def __init__(self, data_dir, date):
 
-        self.data_dir = data_dir
-
-        # To-do: break this code into separate functions
-
-        # LOAD JSON CONFIG FILE
-
         json_file_loc = data_dir + "ff_config.json"
         print ("File opened: " + json_file_loc)
         jf = open(json_file_loc, "r")
@@ -21,34 +15,75 @@ class System:
         jf.close()
         print ("File closed: " + json_file_loc)
 
-        # LOAD STOPS FILE
+        self.stops = self.readCSV("stops.txt", self.loadStops)
+        self.trips = self.readCSV("trips.txt", self.loadTrips)
+        self.readCSV("stop_times.txt", self.loadStopTimes)
+        # Creates self.services, self.paths, self.paths_ua, and self.segments
 
-        s_file_loc = data_dir + "stops.txt"
-        sf = open(s_file_loc, "r")
-        print ("File opened: " + s_file_loc)
-        sr = csv.DictReader(sf)
-        self.stops = {}  # Dict where keys = stop_ids, values = Stop objects
-        for stop in sr:
-            self.stops[stop["stop_id"]] = Stop(stop)
-        sf.close()
-        # print ("Stops compiled.")
-        print ("File closed: " + s_file_loc)
+        self.days = sortCalendar(data_dir + "calendar.txt", date)
 
-        # LOAD STOP_TIMES AND TRIPS FILES
+        self.ss = map(assignCategory(self.js, self.days), self.segments)
 
-        t_file_loc = data_dir + "trips.txt"
-        tf = open(t_file_loc, "r")
-        print ("File opened: " + t_file_loc)
-        tr = csv.DictReader(tf)
-        self.trips = dict((t_dict["trip_id"], Trip(t_dict)) for t_dict in tr)
-        print ("File closed: " + t_file_loc)
+    def readCSV(self, file_name, function):
+        """Reads a CSV file, creates a DictReader, and runs a given function.
 
-        st_file_loc = data_dir + "stop_times.txt"
-        f = open(st_file_loc, "r")
-        print ("File opened: " + st_file_loc)
+        Args:
+            file_name: The str name of the file, including '.txt' (or '.csv').
+            function: The function to be run, which accepts a single argument
+                (the csv.DictReader generated from the CSV)
+
+        Returns:
+            The value of function(csv.DictReader(file)).
+
+        Side effects:
+            The side effects of 'function'.
+        """
+
+        file_loc = self.data_dir + file_name
+        f = open(file_loc, "r")
+        print ("File opened: " + file_loc)
         r = csv.DictReader(f)
 
-        for st_dict in r:
+        value = function(r)
+
+        f.close()
+        print ("File closed: " + file_loc)
+
+        return value
+
+    def loadStops(self, reader):
+        """Takes the stops from a DictReader and adds them to 'self.stops'.
+
+        Args:
+            reader: A csv.DictReader containing dicts of stop information.
+
+        Returns:
+            A dict where keys = stop_ids, values = Stop objects.
+        """
+
+        return dict(
+            (s_dict["stop_id"], Stop(s_dict)) for s_dict in reader
+        )
+
+    def loadTrips(self, reader):
+        """Takes the trips from a DictReader and adds them to 'self.trips'.
+
+        Args:
+            reader: A csv.DictReader containing dicts of trip information.
+
+        Returns:
+            A dict where keys = trip_ids, values = Trip objects.
+        """
+
+        return dict(
+            (t_dict["trip_id"], Trip(t_dict)) for t_dict in reader
+        )
+
+    def loadStopTimes(self, reader):
+
+        # TODO: Clean up this function
+
+        for st_dict in reader:
             st_dict["departure_time"] = fixTime(st_dict["departure_time"])
             st_dict["trip_obj"] = self.trips[st_dict["trip_id"]]
             st_obj = StopTime(st_dict)
@@ -105,44 +140,6 @@ class System:
         if len(self.paths_ua) > 0:
             raise Exception("Not all paths have been assigned to a Segment.")
         print ("Segments compiled.")
-
-        f.close()
-        print ("File closed: " + st_file_loc)
-
-        # LOAD CALENDAR FILE
-
-        self.days = sortCalendar(data_dir + "calendar.txt", date)
-
-        # CHECK SEGMENTS
-
-        self.ss = map(assignCategory(self.js, self.days), self.segments)
-
-    def readCSV(self, file_name, function):
-        """Reads a CSV file, creates a DictReader, and runs a given function.
-
-        Args:
-            file_name: The str name of the file, including '.txt' (or '.csv').
-            function: The function to be run, which accepts a single argument
-                (the csv.DictReader generated from the CSV)
-
-        Returns:
-            Nothing.
-
-        Side effects:
-            The side effects of 'function'.
-        """
-
-        file_loc = self.data_dir + file_name
-        f = open(file_loc, "r")
-        print ("File opened: " + file_loc)
-        r = csv.DictReader(f)
-
-        function(r)
-
-        f.close()
-        print ("File closed: " + file_loc)
-
-        return
 
     def saveGeoJSON(self, new_file_name):
 
@@ -537,6 +534,5 @@ def convertTime(time):
 
 if __name__ == "__main__":
 
-    # system = System("data/spokane/", "ff-config.json", 20150808)
-    system2 = System("data/spokane/", 20150808)
-    system2.saveGeoJSON("data/spokane/frequency2.geojson")
+    system = System("data/spokane/", 20150808)
+    system.saveGeoJSON("data/spokane/frequency.geojson")
