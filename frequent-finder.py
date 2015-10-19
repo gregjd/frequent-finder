@@ -18,7 +18,8 @@ class System:
         self.stops = self.readCSV("stops.txt", self.loadStops)
         self.trips = self.readCSV("trips.txt", self.loadTrips)
         self.readCSV("stop_times.txt", self.loadStopTimes)
-        # Creates self.services, self.paths, self.paths_ua, and self.segments
+        # self.loadStopTimes mutates self.stops and self.trips, and
+        # creates self.services, self.paths, self.paths_ua, and self.segments
 
         self.days = sortCalendar(data_dir + "calendar.txt", date)
 
@@ -140,6 +141,8 @@ class System:
         if len(self.paths_ua) > 0:
             raise Exception("Not all paths have been assigned to a Segment.")
         print ("Segments compiled.")
+
+        return
 
     def saveGeoJSON(self, new_file_name):
 
@@ -294,6 +297,10 @@ class Stop:
         else:
             return self.stop_times
 
+    def getStopID(self):
+
+        return self.stop_id
+
     def getLonLat(self):
 
         return [self.stop_lon, self.stop_lat]
@@ -355,7 +362,9 @@ class Segment:
                 "coordinates": [s.getLonLat() for s in self.stops]
             },
             "properties": {
-                "category": self.category
+                "category": self.category,
+                "init_stop": self.init_stop.getStopID(),
+                "last_stop": self.last_stop.getStopID()
             }
         }
 
