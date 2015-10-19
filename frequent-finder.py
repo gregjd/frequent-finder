@@ -40,12 +40,7 @@ class System:
         tf = open(t_file_loc, "r")
         print ("File opened: " + t_file_loc)
         tr = csv.DictReader(tf)
-        # self.trip_SIDs = dict(map(lambda x: (x["trip_id"], x["service_id"]), tr))
-        # self.trip_SIDs = dict((x["trip_id"], x["service_id"]) for x in tr)
-        # # Keys = trip_ids, values = service_ids
         self.trips = dict((t_dict["trip_id"], Trip(t_dict)) for t_dict in tr)
-        # Keys = trip_ids, values = Trip objects
-        # print ("Trips compiled.")
         print ("File closed: " + t_file_loc)
 
         st_file_loc = data_dir + "stop_times.txt"
@@ -53,15 +48,10 @@ class System:
         print ("File opened: " + st_file_loc)
         r = csv.DictReader(f)
 
-        # self.trips = {}
         for stop_time in r:
             trip_id = stop_time["trip_id"]  # act on the list item
-            # if trip_id not in self.trips:
-            #     self.trips[trip_id] = []
-            # self.trips[trip_id].append(stop_time)
             self.trips[trip_id].addStopTime(stop_time)
             stop_time["departure_time"] = fixTime(stop_time["departure_time"])
-            # stop_time["service_id"] = self.trip_SIDs[trip_id]
             stop_time["service_id"] = self.trips[trip_id].getServiceID()
             self.stops[stop_time["stop_id"]].addStopTime(stop_time)
         # Takes the stop_times file and returns a dict where
@@ -70,12 +60,8 @@ class System:
         # Adds each stop_time to its respective Stop
         print ("Trips aggregated.")
 
-        # self.services = groupBy(self.trips, getStopSeq)
         self.services = set(t.getStopSeq() for t in self.trips.values())
         # Takes self.trips and returns a set of stop sequence tuples
-        # # Takes self.trips and returns a dict where
-        # # keys = stop sequence tuples, values = dicts from self.trips
-        # # (where keys = trip_ids, values = lists of stop info dicts)
         print ("Services aggregated.")
 
         self.paths = {}  # Keys = path tuples (stop0, stop1), values = dicts
@@ -532,25 +518,6 @@ def getTripID(stop_time):
     return stop_time["trip_id"]
 
 
-# def getStopSeq(trip):
-#     """Returns the stop sequence for a given trip.
-
-#     Args:
-#         trip: List of dicts, where the list represents one trip
-#             and each dict holds the data for a stop on that trip
-
-#     Returns:
-#         A tuple of the stop_ids.
-#     """
-
-#     # Shouldn't need this:
-#     if type(trip) != list:
-#         raise Exception("Argument must be a list.")
-
-#     # return tuple(map(lambda x: str(x["stop_id"]), trip))
-#     return tuple(str(x["stop_id"]) for x in trip)
-
-
 def fixTime(time):
     """Takes a str time and converts the hour to a two-digit value if needed.
 
@@ -572,44 +539,6 @@ def convertTime(time):
     h, m, s = time.split(":")
 
     return datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
-
-
-# def groupBy(iterable, keyfunc):
-#     """Groups items in iterable based on keyfunc.
-
-#     >>> Might get rid of this function.
-
-#     Args:
-#         iterable: dict (or list) of dicts, containing items to be grouped
-#         keyfunc: a function that takes an item (from iterable) as its argument;
-#             used to return the key for groups_dict
-
-#     Returns:
-#         A dict where keys are the groups identified by keyfunc. If the iterable
-#         is a list, the values of the returned dict will be lists. If the
-#         iterable is a dict, the values of the returned dict will be dicts.
-#         As implemented, if iterable is a dict, keyfunc will act on the value
-#         of each item in the dict; the key will be ignored, though it will be
-#         included in the returned dict.
-#     """
-
-#     groups_dict = {}
-#     if type(iterable) == dict:
-#         for i in iterable:
-#             key = keyfunc(iterable[i])  # act on the value of the dict item
-#             if key not in groups_dict:
-#                 groups_dict[key] = {}
-#             groups_dict[key][i] = iterable[i]
-#     elif (type(iterable) == list) or (isinstance(iterable, csv.DictReader)):
-#         for i in iterable:
-#             key = keyfunc(i)  # act on the list item
-#             if key not in groups_dict:
-#                 groups_dict[key] = []
-#             groups_dict[key].append(i)
-#     else:
-#         raise Exception("Argument 'iterable' must be a dict or list.")
-
-#     return groups_dict
 
 
 if __name__ == "__main__":
