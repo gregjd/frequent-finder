@@ -48,16 +48,12 @@ class System:
         print ("File opened: " + st_file_loc)
         r = csv.DictReader(f)
 
-        for stop_time in r:
-            trip_id = stop_time["trip_id"]  # act on the list item
-            self.trips[trip_id].addStopTime(stop_time)
-            stop_time["departure_time"] = fixTime(stop_time["departure_time"])
-            stop_time["service_id"] = self.trips[trip_id].getServiceID()
-            self.stops[stop_time["stop_id"]].addStopTime(stop_time)
-        # Takes the stop_times file and returns a dict where
-        # keys = trip_ids, values = lists of dicts where
-        # each dict is the info for a particular stop on that trip;
-        # Adds each stop_time to its respective Stop
+        for st_dict in r:
+            st_dict["departure_time"] = fixTime(st_dict["departure_time"])
+            st_dict["trip_obj"] = self.trips[st_dict["trip_id"]]
+            st_obj = StopTime(st_dict)
+            self.trips[st_dict["trip_id"]].addStopTime(st_obj)
+            self.stops[st_dict["stop_id"]].addStopTime(st_obj)
         print ("Trips aggregated.")
 
         self.services = set(t.getStopSeq() for t in self.trips.values())
@@ -170,25 +166,34 @@ class System:
 
 class StopTime:
 
-    def __init__(self, stop_time_dict, service_id):
+    def __init__(self, stop_time_dict):
 
         self.departure_time = stop_time_dict["departure_time"]
         self.trip_id = stop_time_dict["trip_id"]
-        self.service_id = service_id
-
-        self.service = None  # Will be written later
+        self.trip_obj = stop_time_dict["trip_obj"]
+        self.stop_id = stop_time_dict["stop_id"]
+        self.service_id = self.trip_obj.getServID()
+        self.service = self.trip_obj.getStopSeq()
 
     def getTime(self):
 
         return self.departure_time
 
+    def getServID(self):
+
+        return self.service_id
+
     def getTripID(self):
 
         return self.trip_id
 
-    def getServiceID(self):
+    def getTripObj(self):
 
-        return self.service_id
+        return self.trip_obj
+
+    def getStopID(self):
+
+        return self.stop_id
 
     def getService(self):
 
@@ -203,9 +208,7 @@ class Trip:
         self.service_id = trip_dict["service_id"]
         self.shape_id = trip_dict["shape_id"]
         self.route_id = trip_dict["route_id"]
-
         self.stop_times = []
-        self.service = None
 
     def addStopTime(self, stop_time):
 
@@ -217,7 +220,7 @@ class Trip:
 
         return self.trip_id
 
-    def getServiceID(self):
+    def getServID(self):
 
         return self.service_id
 
@@ -235,7 +238,7 @@ class Trip:
 
     def getStopSeq(self):
 
-        return tuple(str(x["stop_id"]) for x in self.stop_times)
+        return tuple(x.getStopID() for x in self.stop_times)
 
     def getService(self):
 
@@ -275,16 +278,13 @@ class Stop:
         self.stop_desc = stop_dict["stop_desc"]
 
         self.trip_times = {}  # keys = time points, values = Trips
-        self.stop_times = []  # list of dicts
+        self.stop_times = []  # list of StopTime objects
 
     def __repr__(self):
 
         return ("Stop " + self.stop_id)
 
     def addStopTime(self, stop_time):
-
-        if type(stop_time) != dict:
-            raise Exception("Argument 'stop_time' must be a dict.")
 
         self.stop_times.append(stop_time)
 
@@ -402,12 +402,12 @@ def checkPattern(segment, pattern, days):
 
                 # Get stop times for this day and time range:
                 times = stop.getStopTimes(
-                    lambda t: (bool(t["service_id"] in c)) &
-                    # (_____ in segment.getServices()) &
-                    (r[u"start_time"] < t["departure_time"] < r[u"end_time"])
+                    lambda st: (bool(st.getServID() in c)) &
+                    # (st.getService() in segment.getServices()) &
+                    (r[u"start_time"] < st.getTime() < r[u"end_time"])
                 )
-                times = sorted(times, key=lambda t: t["departure_time"])
-                times = [convertTime(t["departure_time"]) for t in times]
+                times = sorted(times, key=lambda st: st.getTime())
+                times = [convertTime(st.getTime()) for st in times]
 
                 # Create fake stop times to represent the start and end times
                 times.insert(0, start)
@@ -512,12 +512,6 @@ def sortCalendar(cal_file_loc, date):
     return days
 
 
-def getTripID(stop_time):
-    """Returns the trip_id from a stop time."""
-
-    return stop_time["trip_id"]
-
-
 def fixTime(time):
     """Takes a str time and converts the hour to a two-digit value if needed.
 
@@ -544,5 +538,5 @@ def convertTime(time):
 if __name__ == "__main__":
 
     # system = System("data/spokane/", "ff-config.json", 20150808)
-    system = System("data/spokane/", 20150808)
-    system.saveGeoJSON("data/spokane/frequency.geojson")
+    system2 = System("data/spokane/", 20150808)
+    system2.saveGeoJSON("data/spokane/frequency2.geojson")
