@@ -35,7 +35,7 @@ Here's my GeoJSON export from FrequentFinder, displayed in QGIS:
 
 Note that my map has fewer frequent services shown because for this one I set frequency parameters that are more strict than those used by the transit authority. (Also, see those short red segments? Those are places where bus lines overlap to create a short frequent corrider. Yes, FrequentFinder handles those easily.)
 
-In the very near future (i.e. within the next few days), I will post a link for viewing the JavaScript portions of FrequentFinder live on the web, as well as the source code. Also note that I am planning to reorganize some of the code in frequent-finder.py/ff.py in order to make it more readable.
+I am currently working on the Mapbox and D3 portions of this project, and will post them when they are in a useful state. Also note that I am planning to reorganize some of the code in frequent-finder.py/ff.py in order to make it more readable.
 
 I am planning a number of other enhancements to FrequentFinder. I will also write up documentation for how to use FrequentFinder, particularly for people with little coding experience. I'm hoping it will be accessible to "non-coders."
 
