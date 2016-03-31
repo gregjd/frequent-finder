@@ -9,14 +9,6 @@ There are two basic pieces to the puzzle. One is taking the GTFS feed and produc
 
 ![The two parts of the process](/images/FF-OverallFlow.png)
 
-The three main components of FrequentFinder are:
-
-* **frequent-finder.py** (will likely be renamed ff.py): GTFS to GeoJSON, using user-defined parameters for frequency categories
-* **ff_mb.js**: GeoJSON to interactive map
-* **ff_d3.js**: GeoJSON to SVG
-
-Note that there is no need for me to build something that converts GeoJSON to shapefiles, as this can already be done in existing GIS programs.
-
 See [my website](http://www.gregjd.com/) for links to more of my work.
 
 <br>
@@ -35,13 +27,13 @@ Here's my GeoJSON export from FrequentFinder, displayed in QGIS:
 
 Note that my map has fewer frequent services shown because for this one I set frequency parameters that are more strict than those used by the transit authority. (Also, see those short red segments? Those are places where bus lines overlap to create a short frequent corrider. Yes, FrequentFinder handles those easily.)
 
-I am currently working on the Mapbox and D3 portions of this project, and will post them when they are in a useful state. Also note that I am planning to reorganize some of the code in frequent-finder.py/ff.py in order to make it more readable.
-
-I am planning a number of other enhancements to FrequentFinder. I will also write up documentation for how to use FrequentFinder, particularly for people with little coding experience. I'm hoping it will be accessible to "non-coders."
+Currently, my main focus is on improving the core data processing component of FrequentFinder. Later, I hope to add the components for generating interactive Mapbox maps and SVGs from the GeoJSON export; those are not my first priority right now because the GeoJSON export can already be visualized using QGIS.
 
 <br>
 
 ### Usage
+
+_Note: These instructions are intended for someone who is "data literate" and feels comfortable working with things that look code-like, but who may not necessarily be familiar with Python._
 
 There are several ways you can run frequent-finder.py, but here is one. It requires having Python 2.7 and QGIS installed. This should take about 5-10 minutes if you're doing it for the first time.
 
